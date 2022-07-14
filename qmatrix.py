@@ -120,7 +120,7 @@ def genPolyApprox(M, distr, quadType, implementation='LAGRANGE', scaling=True):
                 raise ValueError(f'implementation={implementation}')
             nodes = ap.points
         elif distr == 'EQUID':
-            a, b = 0, 1 if scaling else -1, 1
+            a, b = (0, 1) if scaling else (-1, 1)
             nodes = np.linspace(a, b, M+2)[1:-1] if quadType == 'GAUSS' else \
                 np.linspace(a, b, M+1)[:-1] if quadType == 'RADAU-I' else \
                 np.linspace(a, b, M+1)[1:] if quadType == 'RADAU-II' else \
