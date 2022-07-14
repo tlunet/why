@@ -1,8 +1,15 @@
 # Instalation
 
-Download pythag (in current directory) using
+Clone Repo (ssh-key required):
 
 ```bash
+git clone git@github.com:tlunet/why.git why
+```
+
+Download pythag (in current in the why repository) using
+
+```bash
+cd why
 git clone https://gitlab.com/tlunet/pythag pythag_repo
 ```
 

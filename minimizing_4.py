@@ -18,10 +18,10 @@ def cartesian_product(*arrays):
         arr[...,i] = a
     return arr.reshape(-1, la)
 
-sweepType = 'FE'
+sweepType = 'BE'
 quadType = 'GAUSS'
 nodeType = 'LEGENDRE'
-M = 5
+M = 3
 
 num = 10
 
