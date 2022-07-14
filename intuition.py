@@ -12,19 +12,22 @@ from qmatrix import genQMatrices
 
 sweepType = 'FE'
 quadType = 'GAUSS'
-nodeType = 'EQUID'
+nodeType = 'LEGENDRE'
+
+scaling = True  # Wether or not scale nodes between [0, 1] (if false, [-1, 1])
 
 
 print('n, ||Q-QDelta||, max(QDelta)')
 
-nValues = [5, 10, 20, 50, 100, 200, 300] #, 100, 200, 500]
+nValues = [5, 10, 20, 50, 100, 200, 300, 500] #, 100, 200, 500]
+# nValues = [10]
 
 norms = []
 maxDelta = []
 minDelta = []
 
 for n in nValues:
-    coll = genQMatrices(n, nodeType, quadType, sweepType)
+    coll = genQMatrices(n, nodeType, quadType, sweepType, scaling=scaling)
 
     norm = np.linalg.norm(coll.Q - coll.QDelta, ord=np.inf)
     norms.append(norm)
@@ -43,7 +46,16 @@ plt.loglog(nValues, norms, label='Norms')
 plt.loglog(nValues, maxDelta, label='MaxDelta')
 plt.loglog(nValues, maxDelta**(7/8), ':o', label='MaxDelta**(7/8)')
 # plt.loglog(nValues, nValues*maxDelta**2, ':s', label='M*MaxDelta**2')
-plt.loglog(nValues, (np.pi/(2*nValues+2))**(7/8), ':^', label='(pi/(2M+2))**(7/8)')
+if scaling:
+    plt.loglog(nValues, (np.pi/(2*nValues+2))**(7/8), ':^',
+               label='(pi/(2M+2))**(7/8)')
+else:
+    plt.loglog(nValues, (np.pi/(nValues+1))**(7/8), ':^',
+               label='(pi/(M+1))**(7/8)')
 # plt.loglog(nValues, (np.diag(coll.QDelta)**2).sum()/minDelta, label='sum(**2)/minDelta')
 plt.legend()
 plt.grid()
+plt.xlabel('$M$')
+plt.ylabel(r'$||Q-Q_\Delta||$')
+plt.title(f'{quadType}-{nodeType}, {sweepType}, scaling={scaling}')
+plt.tight_layout()

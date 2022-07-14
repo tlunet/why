@@ -97,7 +97,7 @@ class Results(object):
         return self._res.__repr__()
 
 
-def genPolyApprox(M, distr, quadType, implementation='LAGRANGE'):
+def genPolyApprox(M, distr, quadType, implementation='LAGRANGE', scaling=True):
     if distr == 'GIVEN':
         ap = LagrangeApproximation(
             M, weightComputation='STABLE', scaleRef='MAX')
@@ -107,21 +107,24 @@ def genPolyApprox(M, distr, quadType, implementation='LAGRANGE'):
         if distr in ['LEGENDRE', 'CHEBY-1', 'CHEBY-2', 'CHEBY-3', 'CHEBY-4']:
             if implementation == 'SPECTRAL':
                 ap = SpectralApproximation(
-                    M, pType=distr, qType=quadType, bounds=[0, 1])
+                    M, pType=distr, qType=quadType,
+                    bounds=[0, 1] if scaling else [-1, 1])
             elif implementation == 'LAGRANGE':
                 ap = LagrangeApproximation(
                     (distr, M), qType=quadType)
-                ap.points += 1
-                ap.points /= 2
+                if scaling:
+                    ap.points += 1
+                    ap.points /= 2
                 ap = LagrangeApproximation(ap.points)
             else:
                 raise ValueError(f'implementation={implementation}')
             nodes = ap.points
         elif distr == 'EQUID':
-            nodes = np.linspace(0, 1, M+2)[1:-1] if quadType == 'GAUSS' else \
-                np.linspace(0, 1, M+1)[:-1] if quadType == 'RADAU-I' else \
-                np.linspace(0, 1, M+1)[1:] if quadType == 'RADAU-II' else \
-                np.linspace(0, 1, M)  # LOBATTO
+            a, b = 0, 1 if scaling else -1, 1
+            nodes = np.linspace(a, b, M+2)[1:-1] if quadType == 'GAUSS' else \
+                np.linspace(a, b, M+1)[:-1] if quadType == 'RADAU-I' else \
+                np.linspace(a, b, M+1)[1:] if quadType == 'RADAU-II' else \
+                np.linspace(a, b, M)  # LOBATTO
             ap = LagrangeApproximation(nodes, weightComputation='STABLE',
                                        scaleRef='MAX')
         else:
@@ -154,7 +157,7 @@ def genQDelta(sweepType, deltas, Q):
 
 
 def genQMatrices(M, distr, quadType, sweepType,
-                 implementation='LAGRANGE', cPoints=None):
+                 implementation='LAGRANGE', cPoints=None, scaling=True):
     """
     Generate the Q, QDelta and H matrix for any given type of SDC sweep
 
@@ -179,6 +182,8 @@ def genQMatrices(M, distr, quadType, sweepType,
     - FE : Forward Euler sweep (first order)
     - LU : uses the LU trick
     - TRAP : sweep based on Trapezoidal rule (second order)
+    scaling : bool
+        Wether or not scale the nodes between [0, 1]
 
     Returns
     ----
@@ -189,13 +194,13 @@ def genQMatrices(M, distr, quadType, sweepType,
     H : array (M,M)
         interpolation matrix (from nodes to right bound)
     nodes : array (M,)
-        quadrature nodes, scaled to [0, 1]
+        quadrature nodes, scaled to [0, 1] (or not ...)
     """
     # Wether or not coarse level is defined
     useCoarse = cPoints is not None
 
     # Generate nodes and approximation
-    ap = genPolyApprox(M, distr, quadType, implementation)
+    ap = genPolyApprox(M, distr, quadType, implementation, scaling)
     nodes = ap.points
     M = ap.n
     if useCoarse:
@@ -217,11 +222,12 @@ def genQMatrices(M, distr, quadType, sweepType,
     # Generate deltas and Q
     deltas = np.copy(nodes)
     deltas[1:] = np.ediff1d(nodes)
-    Q = ap.getIntegrationMatrix([(0, tau) for tau in nodes])
+    Q = ap.getIntegrationMatrix([(0 if scaling else -1, tau) for tau in nodes])
     if useCoarse:
         deltasTilde = np.copy(nodesTilde)
         deltasTilde[1:] = np.ediff1d(nodesTilde)
-        QTilde = apCoarse.getIntegrationMatrix([(0, tau) for tau in nodesTilde])
+        QTilde = apCoarse.getIntegrationMatrix(
+            [(0 if scaling else -1, tau) for tau in nodesTilde])
 
     # Generate QDelta
     QDelta = genQDelta(sweepType, deltas, Q)
