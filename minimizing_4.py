@@ -18,10 +18,19 @@ def cartesian_product(*arrays):
         arr[...,i] = a
     return arr.reshape(-1, la)
 
+# QDelta
 sweepType = 'BE'
-quadType = 'GAUSS'
+
+# Quadrature type (wether or not include the right/left bound in the nodes)
+# -- 'GAUSS', 'RADAU-I' (left), 'RADAU-II' (right), 'LOBATTO'
+quadType = 'RADAU-II'
+
+# Node distribution, can be
+# -- 'EQUID', 'LEGENDRE', 'CHEBY-1', 'CHEBY-2', 'CHEBY-3', 'CHEBY-4'
 nodeType = 'LEGENDRE'
-M = 3
+
+# Number of nodes
+M = 6
 
 num = 10
 
