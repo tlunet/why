@@ -10,7 +10,7 @@
 
 ## Hypothesis
 
-$`Q_\Delta`$ defined for Backward Euler like this :
+$Q_\Delta$ defined for Backward Euler like this :
 
 ```math
 Q_\Delta = \begin{bmatrix}
