@@ -18,6 +18,8 @@
 Just run the [diagonalNodes.py](../scripts/fact4/diagonalNodes.py) script with the parameter you want, and look at the output.
 Then you can compare to the diagonal values obtained with minimization of the spectral radius (cf [Fact n°3](fact3.md)) and see that `nodes/M` correspond to one optimal set of coefficients in [optimDiagCoeffs.md](../scripts/fact3/optimDiagCoeffs.md).
 
+:bell: The [checkSum.py](../scripts/fact3/checkSum.py) script from [Fact n°3](fact3.md) also show those information for every diagonal coefficients computed with brute force optimization ...
+
 In particular for 4 equidistant "Lobatto" points, we get the optimial coefficients :
 
 ```python

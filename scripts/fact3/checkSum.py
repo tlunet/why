@@ -5,7 +5,10 @@ Created on Wed Mar 29 20:36:09 2023
 
 @author: telu
 """
+import numpy as np
 import pandas as pd
+
+from pycode.qmatrix import genCollocation
 
 df = pd.read_table(
     'optimDiagCoeffs.md', sep="|", header=0, index_col=0,
@@ -37,8 +40,16 @@ def sumValue(M, quadType):
 
 
 print('Testing sum of diagonal coefficients :')
+combs = set()
 for line in df.values:
-    M, quadType, _, x, sr = line
+    M, quadType, distr, x, sr = line
     s = sum(x)
+    nodes, _, Q = genCollocation(M, distr, quadType)
     sTh = sumValue(M, quadType)
-    print(f' -- M={M}, {quadType} (sr={sr}) : sum={s} (th={sTh})')
+    if (M, quadType, distr) not in combs:
+        print(f'M={M}, quadType={quadType}, distr={distr}')
+        print(f' -- nCoeff/order : {sTh}')
+        print(f' -- nodes/M : {nodes/M}')
+        print(f' -- sum(diag(Q)) : {np.sum(np.diag(Q))}')
+        combs.add((M, quadType, distr))
+    print(f' -- xOpt={x}, sr={sr}, sum={s}')
