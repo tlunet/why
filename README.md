@@ -46,7 +46,7 @@ More details in [this notes](./notes/fact2.md), python scripts illustrating this
 
 ### Fact n°4
 
-> When minimizing the spectral radius of $Q-Q_{\Delta}(x)$, with $Q_{\Delta}(x)$ a diagonal matrix with $x$ on the diagonal, then the global minimum $x_{min}$ is 
+> When minimizing the spectral radius of $Q-Q_{\Delta}(x)$, with $Q_{\Delta}(x)$ a diagonal matrix with $x$ on the diagonal, then the **global** minimum $x_{min}$ is 
 > $$
 > x_{min} = \frac{\tau}{M},
 > $$
