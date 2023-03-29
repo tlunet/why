@@ -29,3 +29,5 @@ which is the same as the nodes divided by $M=5$ when you take those nodes :
 ```python
 nodes = [0.0, 1/3, 2/3, 1.0]
 ```
+
+Same works for equidistant "GAUSS" nodes, with $M \in {3, 4}$, see [optimDiagCoeffs.md](../scripts/fact3/optimDiagCoeffs.md) and associated run with [diagonalNodes.py](../scripts/fact4/diagonalNodes.py).

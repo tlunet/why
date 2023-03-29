@@ -12,7 +12,7 @@ from pycode.qmatrix import genCollocation
 # change these:
 ############################
 M = 4
-quadType = 'LOBATTO'
+quadType = 'GAUSS'
 distr = 'EQUID'
 ############################
 

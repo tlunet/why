@@ -17,7 +17,7 @@ from pycode.optim import findLocalMinima
 # Change these :
 M = 4
 distr = 'EQUID'
-quadType = 'LOBATTO'
+quadType = 'GAUSS'
 # ------------------------
 
 # Generate collocation and adapt to quadrature type
@@ -110,5 +110,5 @@ for c in res:
         columns=df.columns)
     df = addCoefficients(line, df)
 
-df.sort_values(by=['M', 'quadType', 'coeffs'], inplace=True)
+df.sort_values(by=['M', 'quadType', 'distr', 'coeffs'], inplace=True)
 df.to_markdown(buf='optimDiagCoeffs.md', index=False)
