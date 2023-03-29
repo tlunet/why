@@ -1,9 +1,11 @@
 # Fact n°3
 
 > When minimizing the spectral radius of $Q-Q_{\Delta}(x)$, with $Q_{\Delta}(x)$ a diagonal matrix with $x$ on the diagonal, for any local minimum $x$ we have
+>
 > $$
 > \sum x_i = \frac{N_{coeff}}{order},
 > $$
+>
 > where $N_{coeff}$ is the number of non-zero coefficients of $x$, that is
 >
 > - $N_{coeff} = M$ for GAUSS and RADAU-RIGHT points 
