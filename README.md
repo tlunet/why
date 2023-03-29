@@ -7,11 +7,11 @@ _:scroll: This repository contains some open questions following discussions and
 ### Fact n°1
 
 > For Backward Euler (BE) or Forward Euler (FE) sweep, and any type of quadrature type (GAUSS, LOBATTO, RADAU-[...]), then
-
-$$
-\underset{M \rightarrow\infty}{\lim} || Q-Q_{\Delta} ||_\infty \simeq \left(\frac{\pi}{2M+2}\right)^{0.885}
-$$
-
+>
+>$$
+>\underset{M \rightarrow\infty}{\lim} || Q-Q_{\Delta} ||_\infty \simeq \left(\frac{\pi}{2M+2}\right)^{0.885}
+>$$
+>
 > where $\left(\frac{\pi}{2M+2}\right) \underset{M \rightarrow\infty}{\sim} \Delta\tau_{max}(M)$, with $\Delta\tau_{max}(M)$ the largest gap between the $M$ collocation nodes written in $[0,1]$.
 
 More details in [this notes](./notes/fact1.md), python scripts illustrating this are located [here ...](./scripts/fact1/)
@@ -20,9 +20,11 @@ More details in [this notes](./notes/fact1.md), python scripts illustrating this
 ### Fact n°2
 
 > The vector $x$ maximizing $|| (Q-Q_{\Delta})x||_\infty$ is of the form 
+>
 > $$
 > x = [1, \dots, 1, -1, \dots, -1]
 > $$
+>
 > with $(M+1)//2$ leading positive coefficients. Also, $-x$ is also maximizing the norm.
 
 More details in [this notes](./notes/fact2.md), python scripts illustrating this are located [here ...](./scripts/fact2/)
@@ -51,12 +53,15 @@ More details in [this notes](./notes/fact3.md), python scripts illustrating this
 
 ### Fact n°4
 
-> When minimizing the spectral radius of $Q-Q_{\Delta}(x)$, with $Q_{\Delta}(x)$ a diagonal matrix with $x$ on the diagonal, then the **global** minimum $x_{min}$ is 
+> When minimizing the spectral radius of $Q-Q_{\Delta}(x)$, with $Q_{\Delta}(x)$ a diagonal matrix with $x$ on the diagonal, then the **global** minimum $x_{min}$ is
+>
 > $$
 > x_{min} = \frac{\tau}{M},
 > $$
+>
 > where $\tau$ are the collocation nodes written in $[0,1]$. Also, we have $[Q-Q_{\Delta}(\tau)]e=0$ with $e=[1,1,\dots,1]$, and this works **also** for equidistant nodes.
 > For Legendre nodes, the combination with Fact n°3 gives
+>
 > $$
 > \sum \tau_i = \frac{M N_{coeff}}{order}
 > $$
