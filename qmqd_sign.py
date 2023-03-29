@@ -8,7 +8,7 @@ Created on Tue Jul 26 14:14:16 2022
 import numpy as np
 import matplotlib.pyplot as plt
 
-from qmatrix import genQMatrices
+from pycode.qmatrix import genQMatrices
 
 # QDelta
 sweepType = 'BE'
@@ -18,18 +18,18 @@ sweepType = 'BE'
 nodeType = 'LEGENDRE'
 
 # Number of nodes
-M = 30
+M = 10
 
 fig, axes = plt.subplots(1, 4)
 fig.suptitle(f'Sign of QmQDelta for {nodeType}-{sweepType}'
              ' : yellow=positive, blue=negative, cyan=null')
 
-for i, quadType in enumerate(['GAUSS', 'RADAU-I', 'RADAU-II', 'LOBATTO']):
+for i, quadType in enumerate(['GAUSS', 'RADAU-LEFT', 'RADAU-RIGHT', 'LOBATTO']):
 
-    coll = genQMatrices(M, nodeType, quadType, sweepType, scaling=True)
+    coll = genQMatrices(M, nodeType, quadType, sweepType)
 
     # Rounding to 10 decimals to avoid detecting sign for almost zero values
-    QmQDelta = np.round(coll.Q - coll.QDelta, 10)
+    QmQDelta = np.round(coll['Q'] - coll['QDelta'], 10)
 
     axes[i].imshow(np.sign(QmQDelta))
     axes[i].set_title(quadType)

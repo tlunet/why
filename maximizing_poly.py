@@ -8,39 +8,38 @@ Created on Fri Jul 29 11:27:47 2022
 import numpy as np
 import matplotlib.pyplot as plt
 
-from qmatrix import genPolyApprox
+from pycode.qmatrix import genCollocation
+from pycode.lagrange import LagrangeApproximation
 
 
 M = 50
-num = 500
 
-# Build the maximizing polynomial
+# Plot discretization
+num = 500
+t = np.linspace(0, 1, num)
+
+# Build the maximizing polynomial values
 p = np.ones(M)
 p[M//2:] = -1
 
 # Node distribution, can be
 # -- 'EQUID', 'LEGENDRE', 'CHEBY-1', 'CHEBY-2', 'CHEBY-3', 'CHEBY-4'
-nodeType = 'LEGENDRE'
+nodeType = 'CHEBY-4'
 
 # Quadrature type (wether or not include the right/left bound in the nodes)
-# -- 'GAUSS', 'RADAU-I' (left), 'RADAU-II' (right), 'LOBATTO'
-quadType = 'LOBATTO'
+# -- 'GAUSS', 'RADAU-LEFT', 'RADAU-RIGHT', 'LOBATTO'
+quadType = 'RADAU-RIGHT'
 
 # Generate nodes and polynomial approximation
-ap = genPolyApprox(
-    M, distr=nodeType, quadType=quadType,
-    implementation='LAGRANGE', scaling=True)
-
-# Plot discretization
-t = np.linspace(0, 1, num)
-
-# Interpolation matrix
-P = ap.getInterpolationMatrix(t)
+nodes = genCollocation(M, nodeType, quadType)[0]
+approx = LagrangeApproximation(nodes)
+interpol = approx.getInterpolationMatrix(t)
+poly = interpol.dot(p)
 
 # Plotting
 plt.figure()
-plt.plot(t, P.dot(p), label=f'{quadType}-{nodeType}')
-plt.plot(ap.points, p, 'o')
+plt.plot(t, poly, label=f'{quadType}, {nodeType}')
+plt.plot(nodes, p, 'o')
 plt.grid()
 plt.title(f'Interpolant of maximizing poly. for M={M}')
 plt.xlabel('Time')

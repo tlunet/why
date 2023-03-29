@@ -9,27 +9,26 @@ import numpy as np
 import matplotlib.pyplot as plt
 import scipy.optimize as sco
 
-from qmatrix import genQMatrices
+from pycode.qmatrix import genQMatrices
 
 
-lM = np.arange(50)+3
+lM = np.arange(150)+3
 
 distr = 'LEGENDRE'
-quadType = 'LOBATTO'
-implementation = 'SPECTRAL'
+quadType = 'GAUSS'
 NORM_TYPE = 'L_INF'
 
 
 def norm(A):
-    order = 2 if NORM_TYPE == 'L_2' else np.inf
-    return np.linalg.norm(A, order)
+    return np.linalg.norm(A, 2 if NORM_TYPE == 'L_2' else np.inf)
 
 
 for sweepType, sym in zip(['FE', 'BE'],
                           ['s', 'o', '^', 'p']):
+
     normQmQDelta = [
-        norm(Q-QDelta) for Q, QDelta, _, _ in
-        [genQMatrices(M, distr, quadType, sweepType, implementation)
+        norm(coll['Q']-coll['QDelta']) for coll in
+        [genQMatrices(M, distr, quadType, sweepType)
          for M in lM]]
 
     s = slice(None, None)
@@ -41,18 +40,18 @@ for sweepType, sym in zip(['FE', 'BE'],
     plt.figure(f'QmQDelta_{distr}_{quadType}_{sweepType}_{NORM_TYPE}')
     plt.loglog(lM, normQmQDelta, '-o', label='Numeric.')
 
-    iSep = 9
+    iSep = 100
 
     s = slice(None, iSep)
     res = sco.minimize(obj, [1., 1.])
     a1, b1 = res.x
-    sa1, sb1 = f'{a1:1.2f}', f'{b1:1.2f}'
+    sa1, sb1 = f'{a1:1.2f}', f'{b1:1.5f}'
     plt.loglog(lM, a1/lM**(b1), '--', label='$'+sa1+'/M^{'+sb1+'}$')
 
     s = slice(iSep, None)
     res = sco.minimize(obj, [1., 1.])
     a2, b2 = res.x
-    sa2, sb2 = f'{a2:1.2f}', f'{b2:1.2f}'
+    sa2, sb2 = f'{a2:1.2f}', f'{b2:1.5f}'
     plt.loglog(lM, a2/lM**(b2), '--', label='$'+sa2+'/M^{'+sb2+'}$')
 
     plt.grid(True)

@@ -8,7 +8,7 @@ Created on Thu Jul 14 12:12:22 2022
 import numpy as np
 import matplotlib.pyplot as plt
 
-from qmatrix import genQMatrices
+from pycode.qmatrix import genQMatrices
 
 def cartesian_product(*arrays):
     la = len(arrays)
@@ -23,11 +23,11 @@ quadType = 'GAUSS'
 nodeType = 'EQUID'
 
 
-coll = genQMatrices(3, nodeType, quadType, sweepType, scaling=True)
+coll = genQMatrices(3, nodeType, quadType, sweepType)
 
-norm = np.linalg.norm(coll.Q - coll.QDelta, ord=np.inf)
+norm = np.linalg.norm(coll['Q'] - coll['QDelta'], ord=np.inf)
 
-QmQDelta = coll.Q - coll.QDelta
+QmQDelta = coll['Q'] - coll['QDelta']
 
 x1 = np.linspace(-1, 1, num=100)
 x2 = np.linspace(-1, 1, num=101)

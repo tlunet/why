@@ -17,9 +17,9 @@ nodeType = 'LEGENDRE'
 
 coll = genQMatrices(2, nodeType, quadType, sweepType, scaling=True)
 
-norm = np.linalg.norm(coll.Q - coll.QDelta, ord=np.inf)
+norm = np.linalg.norm(coll['Q'] - coll['QDelta'], ord=np.inf)
 
-QmQDelta = coll.Q - coll.QDelta
+QmQDelta = coll['Q'] - coll['QDelta']
 
 x1 = np.linspace(-1, 1, num=100)
 x2 = np.linspace(-1, 1, num=101)
