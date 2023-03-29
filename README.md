@@ -50,7 +50,7 @@ More details in [this notes](./notes/fact2.md), python scripts illustrating this
 > $$
 > x_{min} = \frac{\tau}{M},
 > $$
-> where $\tau$ are the collocation nodes written in $[0,1]$. Also, we have $(Q-Q_{\Delta}(\tau))e=0$ with $e=[1,1,\dots,1]$, and the combination with Fact n°3 gives
+> where $\tau$ are the collocation nodes written in $[0,1]$. Also, we have $[Q-Q_{\Delta}(\tau)]e=0$ with $e=[1,1,\dots,1]$, and the combination with Fact n°3 gives
 > $$
 > \sum \tau_i = \frac{M N_{coeff}}{order}
 > $$ 
