@@ -1,4 +1,4 @@
-# Some strange facts about the $Q-Q_{\Delta}$ matrix (... why ?!?)
+# Strange facts about $Q-Q_{\Delta}$ (... why ?!?)
 
 _:scroll: This repository contains some open questions following discussions and experiments on the collocation matrices arising in the SDC time-integration method ... some standalone python code is provided to illustrate those facts._
 
