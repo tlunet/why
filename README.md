@@ -1,31 +1,25 @@
-# Instalation
+# Some strange facts about the $Q-Q_{\Delta}$ matrix (... why ?!?)
 
-Clone Repo (ssh-key required):
+_:scroll: This repository contains some open questions following discussions and experiments on the collocation matrices arising in the SDC time-integration method ... some standalone python code is provided to illustrate those facts._
 
-```bash
-git clone git@github.com:tlunet/why.git why
-```
+## Summary
 
-Download pythag (in current in the why repository) using
+### Fact n°1
 
-```bash
-cd why
-git clone https://gitlab.com/tlunet/pythag pythag_repo
-```
+> For Backward Euler (BE) or Forward Euler (FE) sweep, and any type of quadrature type (GAUSS, LOBATTO, RADAU-[...]), then
+> $$
+> \underset{M \rightarrow\infty}{\lim} || Q-Q_{\Delta} ||_\infty \simeq \left(\frac{\pi}{2M+2}\right)^{0.885}
+> $$
+> where $\left(\frac{\pi}{2M+2}\right) \underset{M \rightarrow\infty}{\sim} \Delta\tau_{max}(M)$, with $\Delta\tau_{max}(M)$ the largest gap between the $M$ collocation nodes written in $[0,1]$.
 
-Then create a symbolic link to the python package
+More details in [this notes](./notes/fact1.md), python scripts illustrating this are located [here ...](./scripts/fact1/)
 
-```bash
-ln -sf pythag_repo/pythag pythag
-```
+### Fact n°2
 
-# Main modules
+> The vector $x$ maximizing $|| (Q-Q_{\Delta})x||_\infty$ is of the form 
+> $$
+> x = [1, 1, \dots, 1, -1, -1, \dots, -1]
+> $$
+> with $(M+1)//2$ leading positive coefficients. Also, $-x$ is also maximizing the norm.
 
-- qmatrix.py : generate Q, QDelta, nodes, ... for many type of distribution
-- gmfa.py : some analytic functions (not usefull here ...)
-
-# Main Scripts
-
-- approxLagrange.py : visualize lagrange polynomial for equidistant / gauss-type nodes, and Q-QDelta as matrix
-- invest_QmQDelta.py : original script to look at ||Q-QDelta||
-- intuition.py : new script to investigate ||Q-QDelta||
+More details in [this notes](./notes/fact2.md), python scripts illustrating this are located [here ...](./scripts/fact2/)

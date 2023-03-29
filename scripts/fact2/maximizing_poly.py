@@ -12,7 +12,7 @@ from pycode.qmatrix import genCollocation
 from pycode.lagrange import LagrangeApproximation
 
 
-M = 50
+M = 5
 
 # Plot discretization
 num = 500

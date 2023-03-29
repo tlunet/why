@@ -30,7 +30,7 @@ quadType = 'LOBATTO'
 nodeType = 'LEGENDRE'
 
 # Number of nodes
-M = 2
+M = 3
 
 num = 10
 

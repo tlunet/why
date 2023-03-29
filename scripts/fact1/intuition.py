@@ -45,11 +45,11 @@ plt.loglog(nValues, norms, label='Norms')
 plt.loglog(nValues, maxDelta, label='MaxDelta')
 plt.loglog(nValues, maxDelta**exp, ':o', label=f'MaxDelta**{exp}')
 # plt.loglog(nValues, nValues*maxDelta**2, ':s', label='M*MaxDelta**2')
-# if scaling:
-#     plt.loglog(nValues, (np.pi/(2*nValues+2))**(7/8), ':^',
-#                label='(pi/(2M+2))**(7/8)')
-plt.loglog(nValues, (np.pi/(nValues+1))**exp, ':^',
-           label=f'(pi/(M+1))**{exp}')
+# if not scaling:
+#     plt.loglog(nValues, (np.pi/(nValues+1))**(7/8), ':^',
+#                label='(pi/(M+1))**(7/8)')
+plt.loglog(nValues, (np.pi/(2*nValues+2))**exp, ':^',
+           label=f'(pi/(2M+2))**{exp}')
 # plt.loglog(nValues, (np.diag(coll['QDelta'])**2).sum()/minDelta, label='sum(**2)/minDelta')
 plt.legend()
 plt.grid()

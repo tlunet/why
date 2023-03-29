@@ -8,14 +8,14 @@ Created on Thu Jul 14 12:12:22 2022
 import numpy as np
 import matplotlib.pyplot as plt
 
-from qmatrix import genQMatrices
+from pycode.qmatrix import genQMatrices
 
 sweepType = 'BE'
 quadType = 'LOBATTO'
 nodeType = 'LEGENDRE'
 
 
-coll = genQMatrices(2, nodeType, quadType, sweepType, scaling=True)
+coll = genQMatrices(2, nodeType, quadType, sweepType)
 
 norm = np.linalg.norm(coll['Q'] - coll['QDelta'], ord=np.inf)
 
