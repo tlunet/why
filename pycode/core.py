@@ -150,8 +150,7 @@ class IMEXSDCCore(object):
     # Class properties
     # -------------------------------------------------------------------------
     @classmethod
-    @property
-    def maxOrder(cls):
+    def getMaxOrder(cls):
         # TODO : adapt to non-LEGENDRE node distributions
         M = len(cls.nodes)
         return 2*M if cls.quadType == 'GAUSS' else \
@@ -159,31 +158,26 @@ class IMEXSDCCore(object):
             2*M-2  # LOBATTO
 
     @classmethod
-    @property
-    def infos(cls):
+    def getInfos(cls):
         return sdcInfos(
             len(cls.nodes), cls.quadType, cls.nodeDistr, cls.nSweep,
             cls.implSweep, cls.explSweep, cls.initSweep, cls.forceProl)
 
     @classmethod
-    @property
-    def M(cls):
+    def getM(cls):
         return len(cls.nodes)
 
     @classmethod
-    @property
     def rightIsNode(cls):
         return np.isclose(cls.nodes[-1], 1.0)
 
     @classmethod
-    @property
     def leftIsNode(cls):
         return np.isclose(cls.nodes[0], 0.0)
 
     @classmethod
-    @property
     def doProlongation(cls):
-        return not cls.rightIsNode or cls.forceProl
+        return not cls.rightIsNode() or cls.forceProl
 
     @classmethod
     def _setSweep(cls, k):

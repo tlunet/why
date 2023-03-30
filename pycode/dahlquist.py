@@ -23,6 +23,8 @@ class IMEXSDC(IMEXSDCCore):
     # -------------------------------------------------------------------------
     def __init__(self, u0, lambdaI, lambdaE):
 
+        self.M = self.getM()
+
         model = np.asarray(np.asarray(lambdaI) + np.asarray(lambdaE) + 0.)
         c = lambda : np.zeros_like(model)
 
@@ -36,7 +38,7 @@ class IMEXSDC(IMEXSDCCore):
         self.rhs, self.u0 = c(), c()
         self.lamIU = deque([[c() for _ in range(self.M)] for _ in range(2)])
         self.lamEU = deque([[c() for _ in range(self.M)] for _ in range(2)])
-        if not self.leftIsNode:
+        if not self.leftIsNode():
             self.lamEU0, self.lamIU0 = c(), c()
 
         # Instanciate list of solver (ony first time step)
@@ -89,14 +91,14 @@ class IMEXSDC(IMEXSDCCore):
         dt = self.dt
         rhs, u0 = self.rhs, self.u0
         lamIUk, lamEUk = self.lamIU[0], self.lamEU[0]
-        if not self.leftIsNode:
+        if not self.leftIsNode():
             lamEU0, lamIU0 = self.lamEU0, self.lamIU0
         axpy = self.axpy
 
         if iType == 'QDELTA':
 
             # Prepare initial field evaluation
-            if not self.leftIsNode:
+            if not self.leftIsNode():
                 self._evalExplicit(lamEU0)
                 lamEU0 *= dt*self.dtauE
                 if self.dtauI != 0.0:
@@ -109,7 +111,7 @@ class IMEXSDC(IMEXSDCCore):
                 # -- initialize with U0 term
                 np.copyto(rhs, u0)
                 # -- add initial field evaluation
-                if not self.leftIsNode:
+                if not self.leftIsNode():
                     rhs += lamEU0
                 # -- add explicit and implicit terms (already computed)
                 for j in range(i):
@@ -215,7 +217,7 @@ class IMEXSDC(IMEXSDCCore):
             self._sweep()
 
         # Compute prolongation if needed
-        if self.doProlongation:
+        if self.doProlongation():
             self._prolongation()
 
     @classmethod
