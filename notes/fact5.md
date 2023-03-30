@@ -28,3 +28,15 @@ $$
 
 More precisely, after $M$ applications, we get that $x^{(M)} = 0$ for an arbitrary starting polynomial, concluding $(Q-Q_{\Delta}(\frac{\tau}{M}))^M = 0$.
 Because it is a nilpotent matrix, it's charachteristic polynomials is $\lambda^M$ and the spactral radius is 0, since all the eigenvalues are 0.
+
+## Examples
+Run the Just run the [nilpotency.py](../scripts/fact5/nilpotency.py) script. The output is the maximum element in the powers of our matrix.
+For 4 `GAUSS-LEGENDRE` points we get
+
+```python
+|(Q - D)^0|_max = 1.0
+|(Q - D)^1|_max = 0.35395300603375063
+|(Q - D)^2|_max = 0.10442785312900467
+|(Q - D)^3|_max = 0.01922398239399945
+|(Q - D)^4|_max = 8.552412457109149e-19
+```
