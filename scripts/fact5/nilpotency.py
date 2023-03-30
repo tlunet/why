@@ -11,8 +11,8 @@ from pycode.qmatrix import genCollocation
 
 # change these:
 ############################
-M = 4
-quadType = 'GAUSS'
+M = 5
+quadType = 'RADAU-RIGHT'
 distr = 'LEGENDRE'
 ############################
 
@@ -23,7 +23,7 @@ def spectralRadius(x):
 
 nodes, _, Q = genCollocation(M, distr, quadType)
 
-print('quadType = {}\ndistr = {}\nM={}'.format(quadType, distr, M))
+print('quadType = {}\ndistr = {}\nM = {}'.format(quadType, distr, M))
 print('define: D = diag(nodes) / M\n')
 D = np.diag(nodes) / M
 
