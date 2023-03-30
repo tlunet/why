@@ -13,13 +13,27 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 3
+M = 5
 nodeDistr = 'LEGENDRE'
 quadType = 'LOBATTO'
 # -- SDC settings
-implSweep = ['BEPAR', 'DNODES']
+# listImplSweeps = [
+#     ('BE', '-^'),
+#     ('LU', '-o'),
+#     ('BEPAR', '-s'),
+#     ('OPT-NR-0', '--^'),
+#     ('OPT-QMQD-0', '--o'),
+#     ('OPT-SPECK-0', '--s'),
+#     ]
+listImplSweeps = [
+    ('DNODES-1', '-^'),
+    ('DNODES-2', '-o'),
+    ('DNODES-3', '->'),
+    ('DNODES-4', '-s'),
+    ('DNODES-5', '-<'),
+    ]
 explSweep = 'PIC'
-initSweep = 'QDELTA'
+initSweep = 'COPY'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
@@ -29,45 +43,45 @@ tEnd = 2*np.pi
 nSteps = 10
 # -----------------------------------------------------------------------------
 
-times = np.linspace(0, tEnd, nSteps+1)
-
-IMEXSDC.setParameters(
-    M=M, quadType=quadType, nodeDistr=nodeDistr,
-    implSweep=implSweep, explSweep=explSweep, initSweep=initSweep,
-    forceProl=collUpdate)
-
-solver = IMEXSDC(u0, lambdaI, lambdaE)
-
 def extractResiduals(solver, dt):
     lamU = (np.array(solver.lamIU[0]) + np.array(solver.lamEU[0])).ravel()
     lam = solver.lambdaI + solver.lambdaE
     return solver.u0 - lamU/lam + dt * solver.Q @ lamU
 
 plt.figure()
-for nSweep in [0, 1, 2, 3]:
 
-    IMEXSDC.nSweep = nSweep
+for (implSweep, symbol) in listImplSweeps:
 
-    dt = tEnd/nSteps
-    times = np.linspace(0, tEnd, nSteps+1)
+    IMEXSDC.setParameters(
+        M=M, quadType=quadType, nodeDistr=nodeDistr,
+        implSweep=implSweep, explSweep=explSweep, initSweep=initSweep,
+        forceProl=collUpdate)
 
-    np.copyto(solver.u, u0)
-    residuals = [extractResiduals(solver, dt)]
-    for i in range(nSteps):
-        solver.step(dt)
+    solver = IMEXSDC(u0, lambdaI, lambdaE)
+
+    residuals = []
+    for nSweep in range(10):
+
+        IMEXSDC.nSweep = nSweep
+
+        dt = tEnd/nSteps
+
+        np.copyto(solver.u, u0)
+        for i in range(nSteps):
+            solver.step(dt)
         residuals += [extractResiduals(solver, dt)]
+
     residuals = np.array(residuals)
     residuals = np.linalg.norm(residuals, ord=np.inf, axis=-1)
 
-    # Plot residuals VS time
-    lbl = f'k={IMEXSDC.nSweep}'
-    sym = '^-'
-    plt.semilogy(times, residuals, sym, label=lbl)
+    # Plot residuals VS sweeps
+    sym = '^-' if symbol == '' else symbol
+    plt.semilogy(residuals, sym, label=str(implSweep))
 
-plt.xlabel(r'Time')
+plt.xlabel(r'Sweeps')
 plt.ylabel(r'Maximum residuals')
-plt.ylim(1e-6, 1)
+plt.ylim(1e-13, 1)
 plt.legend()
 plt.grid(True)
-plt.title(IMEXSDC.implSweep)
+plt.title(f'M={M}, {nodeDistr}, {quadType}, {initSweep}')
 plt.tight_layout()
