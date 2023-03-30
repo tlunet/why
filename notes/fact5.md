@@ -30,7 +30,7 @@ More precisely, after $M$ applications, we get that $x^{(M)} = 0$ for an arbitra
 Because it is a nilpotent matrix, it's charachteristic polynomials is $\lambda^M$ and the spactral radius is 0, since all the eigenvalues are 0.
 
 ## Examples
-Run the Just run the [nilpotency.py](../scripts/fact5/nilpotency.py) script. The output is the maximum element in the powers of our matrix.
+Run the [nilpotency.py](../scripts/fact5/nilpotency.py) script. The output is the maximum element in the powers of our matrix.
 For 4 `GAUSS-LEGENDRE` points we get
 
 ```python
