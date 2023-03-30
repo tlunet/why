@@ -16,8 +16,8 @@ from pycode.optim import findLocalMinima
 # ------------------------
 # Change these :
 M = 4
-distr = 'EQUID'
-quadType = 'GAUSS'
+distr = 'LEGENDRE'
+quadType = 'RADAU-RIGHT'
 # ------------------------
 
 # Generate collocation and adapt to quadrature type
