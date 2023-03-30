@@ -2,9 +2,9 @@
 
 _:scroll: This repository contains some open questions following discussions and experiments on the collocation matrices arising in the SDC time-integration method ... some standalone python code is provided to illustrate those facts._
 
-## Summary
+In addition, an IMEX SDC implementation is provided with some script allowing a first analysis of SDC with QDelta matrix arising from those facts, see [more details here ...](./scripts/sdc/README.md)
 
-### Fact n°1
+## Fact n°1
 
 > For Backward Euler (BE) or Forward Euler (FE) sweep, and any type of quadrature type (GAUSS, LOBATTO, RADAU-[...]), then
 >
@@ -17,7 +17,7 @@ _:scroll: This repository contains some open questions following discussions and
 More details in [this notes](./notes/fact1.md), python scripts illustrating this are located [here ...](./scripts/fact1/)
 
 
-### Fact n°2
+## Fact n°2
 
 > The vector $x$ maximizing $|| (Q-Q_{\Delta})x||_\infty$ is of the form 
 >
@@ -30,7 +30,7 @@ More details in [this notes](./notes/fact1.md), python scripts illustrating this
 More details in [this notes](./notes/fact2.md), python scripts illustrating this are located [here ...](./scripts/fact2/)
 
 
-### Fact n°3
+## Fact n°3
 
 > When minimizing the spectral radius of $Q-Q_{\Delta}(x)$, with $Q_{\Delta}(x)$ a diagonal matrix with $x$ on the diagonal, for any local minimum $x$ we have
 >
@@ -51,7 +51,7 @@ More details in [this notes](./notes/fact2.md), python scripts illustrating this
 
 More details in [this notes](./notes/fact3.md), python scripts illustrating this are located [here ...](./scripts/fact3/)
 
-### Fact n°4
+## Fact n°4
 
 > When minimizing the spectral radius of $Q-Q_{\Delta}(x)$, with $Q_{\Delta}(x)$ a diagonal matrix with $x$ on the diagonal, then the **global** minimum $x_{min}$ is
 >

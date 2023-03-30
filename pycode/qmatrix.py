@@ -184,19 +184,25 @@ def genQDelta(nodes, sweepType, Q):
         quadrature nodes, scaled to [0, 1]
     sweepType : str
         Type of sweep, that defines QDelta. Can be selected from :
-    - BE : Backward Euler sweep (first order)
-    - FE : Forward Euler sweep (first order)
-    - LU : uses the LU trick
-    - TRAP : sweep based on Trapezoidal rule (second order)
-    - EXACT : don't bother and just use Q
-    - PIC : Picard iteration => zeros coefficient
-    - OPT-[...] : Diagonaly precomputed coefficients, for which one has to
-      provide different parameters. For instance, [...]='QmQd-2' uses the
-      diagonal coefficients using the optimization method QmQd with the index 2
-      solution (index starts at 0 !). Quadtype and number of nodes are
-      determined automatically from the Q matrix.
-    - WEIRD-[...] : diagonal coefficient allowing A-stability with collocation
-      update (forceProl=True).
+            
+        - BE : Backward Euler sweep (first order)
+        - FE : Forward Euler sweep (first order)
+        - LU : uses the LU trick
+        - TRAP : sweep based on Trapezoidal rule (second order)
+        - EXACT : don't bother and just use Q
+        - PIC : Picard iteration => zeros coefficient
+        - OPT-[...] : Diagonaly precomputed coefficients, for which one has to
+          provide different parameters. For instance, [...]='QmQd-2' uses the
+          diagonal coefficients using the optimization method QmQd with the index 2
+          solution (index starts at 0 !). Quadtype and number of nodes are
+          determined automatically from the Q matrix.
+        - WEIRD-[...] : diagonal coefficient allowing A-stability with collocation
+          update (forceProl=True).
+        - DNODES-[...] : nodes divided by a given coefficient. If none is given,
+          then divide by M. Note : DNODES-1 corresponds to BEPAR, and DNODES
+          correspond to the diagonal matrix that minimizes the spectral radius
+          of Q-QDelta.
+    
     Q : array (M,M)
         Q matrix associated to the node distribution
         (used only when sweepType in [LU, EXACT, OPT-[...], WEIRD]).
@@ -267,6 +273,16 @@ def genQDelta(nodes, sweepType, Q):
         except (KeyError, IndexError):
             raise ValueError('no WEIRD diagonal coefficients for '
                              f'{M}-{quadType} nodes')
+    elif sweepType.startswith('DNODES'):
+        factor = sweepType.split('-')[-1]
+        if factor == 'DNODES':
+            factor = M
+        else:
+            try:
+                factor = float(factor)
+            except (ValueError, TypeError):
+                raise ValueError(f"DNODES don't accept {factor} as parameter")
+        QDelta[:] = np.diag(nodes)/factor
     else:
         raise NotImplementedError(f'sweepType={sweepType}')
     return QDelta, dtau
