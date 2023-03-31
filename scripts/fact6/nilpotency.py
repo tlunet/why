@@ -28,7 +28,7 @@ print('define: D = diag(nodes) / M\n')
 D = np.diag(nodes) / M
 
 Dinv = []
-for m in range(M, 0, -1):
+for m in range(1, M + 1, 1):
     D = np.diag(nodes) / m
     Dinv_ = D.copy()
     for i in range(M):
