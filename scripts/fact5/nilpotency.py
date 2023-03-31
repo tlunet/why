@@ -12,7 +12,7 @@ from pycode.qmatrix import genCollocation
 # change these:
 ############################
 M = 3
-quadType = 'LOBATTO'
+quadType = 'GAUSS'
 distr = 'LEGENDRE'
 ############################
 
@@ -42,7 +42,7 @@ def spectralRadiusPower(x):
     S = Q-D
     bK = power_iteration(S, 50000)
     return bK.dot(S.dot(bK))
-    
+
 
 def spectralRadius(x):
     x = np.asarray(x)
@@ -52,11 +52,18 @@ def spectralRadius(x):
 nodes, _, Q = genCollocation(M, distr, quadType)
 
 print('quadType = {}\ndistr = {}\nM = {}'.format(quadType, distr, M))
-print('define: D = diag(nodes) / M\n')
+print('define: D = diag(nodes) / M')
 D = np.diag(nodes) / M
 
+print('define: S = Q-D')
 S = (Q- D)
+print(S)
 powS = np.eye(M)
 for m in range(M+1):
     print('|(Q - D)^{}|_max = {}'.format(m, np.max(np.abs(powS))))
     powS = powS @ S
+
+print('eigVals(S):')
+print(np.linalg.eigvals(S))
+print('cond(S):')
+print(np.linalg.cond(S))
