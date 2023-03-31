@@ -25,22 +25,22 @@ quadType = 'LOBATTO'
 #     ('OPT-QMQD-0', '--o'),
 #     ('OPT-SPECK-0', '--s'),
 #     ]
+varSweeps = [f'DNODES-{i+1}' for i in range(M)]
 listImplSweeps = [
-    ('DNODES-1', '-^'),
-    ('DNODES-2', '-o'),
-    ('DNODES-3', '->'),
-    ('DNODES-4', '-s'),
-    ('DNODES-5', '-<'),
+    (varSweeps, '--^'),
+    (varSweeps[-1::-1], '--o'),
+    ('LU', '->'),
+    ('DNODES', '-s'),
     ]
 explSweep = 'PIC'
-initSweep = 'COPY'
+initSweep = 'QDELTA'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
 lambdaI = 1j-0.1
 lambdaE = 0
 tEnd = 2*np.pi
-nSteps = 10
+nSteps = 1
 # -----------------------------------------------------------------------------
 
 def extractResiduals(solver, dt):
