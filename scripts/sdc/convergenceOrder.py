@@ -17,7 +17,7 @@ M = 4
 nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
-implSweep = ['DNODES-4', 'DNODES-3', 'DNODES-2', 'DNODES-1']
+implSweep = [f'DNODES-{i+1}' for i in range(M)]
 explSweep = 'PIC'
 initSweep = 'COPY'
 collUpdate = False

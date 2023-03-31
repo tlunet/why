@@ -13,7 +13,7 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 5
+M = 4
 nodeDistr = 'LEGENDRE'
 quadType = 'LOBATTO'
 # -- SDC settings
@@ -29,15 +29,16 @@ varSweeps = [f'DNODES-{i+1}' for i in range(M)]
 listImplSweeps = [
     (varSweeps, '--^'),
     (varSweeps[-1::-1], '--o'),
-    ('LU', '->'),
-    ('DNODES', '-s'),
+    (['BEPAR', 'DNODES'], '->'),
+    # ('LU', '-s'),
+    # ('BE', '-p')
     ]
 explSweep = 'PIC'
-initSweep = 'QDELTA'
+initSweep = 'COPY'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
-lambdaI = 1j-0.1
+lambdaI = 1j-1
 lambdaE = 0
 tEnd = 2*np.pi
 nSteps = 1
@@ -80,7 +81,7 @@ for (implSweep, symbol) in listImplSweeps:
 
 plt.xlabel(r'Sweeps')
 plt.ylabel(r'Maximum residuals')
-plt.ylim(1e-13, 1)
+# plt.ylim(1e-13, 1)
 plt.legend()
 plt.grid(True)
 plt.title(f'M={M}, {nodeDistr}, {quadType}, {initSweep}')
