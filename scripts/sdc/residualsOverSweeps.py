@@ -13,9 +13,9 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 4
+M = 3
 nodeDistr = 'LEGENDRE'
-quadType = 'LOBATTO'
+quadType = 'RADAU-RIGHT'
 # -- SDC settings
 # listImplSweeps = [
 #     ('BE', '-^'),
@@ -30,8 +30,9 @@ listImplSweeps = [
     (varSweeps, '--^'),
     (varSweeps[-1::-1], '--o'),
     (['BEPAR', 'DNODES'], '->'),
-    # ('LU', '-s'),
-    # ('BE', '-p')
+    ('LU', '-s'),
+    ('BEPAR', '-p'),
+    ('OPT-SPECK-0', '-*')
     ]
 explSweep = 'PIC'
 initSweep = 'COPY'
@@ -40,7 +41,7 @@ collUpdate = False
 u0 = 1.0
 lambdaI = 1j-1
 lambdaE = 0
-tEnd = 2*np.pi
+tEnd = 200*np.pi
 nSteps = 1
 # -----------------------------------------------------------------------------
 

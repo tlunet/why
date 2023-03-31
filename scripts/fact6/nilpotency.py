@@ -40,3 +40,9 @@ pow = np.eye(M)
 for m in range(M):
     pow = (np.eye(M) - Dinv[m] @ Q) @ pow
     print('|prod(I - Dinv[m] Q)|_max = {:<7.4e}, m = 1, ..., {:<3}        ro(prod) = {}'.format(np.max(np.abs(pow)), m+1, max(np.abs(np.linalg.eigvals(pow)))))
+
+print('----------------')
+p = np.eye(M)
+for m in range(M):
+    p = (np.eye(M) - np.linalg.solve(np.diag(np.diag(Q)), Q)) @ p
+    print('|prod(I - Dinv[m] Q)|_max = {:<7.4e}, m = 1, ..., {:<3}        ro(prod) = {}'.format(np.max(np.abs(p)), m+1, max(np.abs(np.linalg.eigvals(p)))))
