@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Mar 29 21:39:39 2023
+Created on Wed Mar 31 2023
 
 @author: gaya
 """
@@ -11,8 +11,8 @@ from pycode.qmatrix import genCollocation
 
 # change these:
 ############################
-M = 5
-quadType = 'GAUSS'
+M = 10
+quadType = 'RADAU-RIGHT'
 distr = 'LEGENDRE'
 ############################
 
@@ -39,4 +39,4 @@ for m in range(M, 0, -1):
 pow = np.eye(M)
 for m in range(M):
     pow = (np.eye(M) - Dinv[m] @ Q) @ pow
-    print('|prod(I - Dinv[m] Q)|_max = {:<7.4e}, m = 1, ..., {}'.format(np.max(np.abs(pow)), m+1))
+    print('|prod(I - Dinv[m] Q)|_max = {:<7.4e}, m = 1, ..., {:<3}        ro(prod) = {}'.format(np.max(np.abs(pow)), m+1, max(np.abs(np.linalg.eigvals(pow)))))
