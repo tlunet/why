@@ -1,6 +1,6 @@
 # Fact n°5
 
-> The matrix $Q-Q_{\Delta}(\frac{\tau}{M})$, where $Q_{\Delta}(x)$ is nilpotent. 
+> The matrix $Q-Q_{\Delta}(\frac{\tau}{M})$ is nilpotent, where $Q_{\Delta}(x)$ a diagonal matrix with $x$ on the diagonal. 
 > 
 > This means that $\rho(Q-Q_{\Delta}(\frac{\tau}{M})) = 0$ and it definitely minimizes the spectral radius!
 

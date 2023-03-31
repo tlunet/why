@@ -138,3 +138,6 @@ dmypy.json
 
 # PDF files
 *.pdf
+
+# VSCode
+.vscode

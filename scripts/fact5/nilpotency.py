@@ -11,8 +11,8 @@ from pycode.qmatrix import genCollocation
 
 # change these:
 ############################
-M = 5
-quadType = 'RADAU-RIGHT'
+M = 3
+quadType = 'GAUSS'
 distr = 'LEGENDRE'
 ############################
 
@@ -30,11 +30,5 @@ D = np.diag(nodes) / M
 S = (Q- D)
 powS = np.eye(M)
 for m in range(M+1):
-    print('|(Q - D)^{}|_max = {}'.format(m, np.max(powS)))
+    print('|(Q - D)^{}|_max = {}'.format(m, np.max(np.abs(powS))))
     powS = powS @ S
-
-
-
-
-
-
