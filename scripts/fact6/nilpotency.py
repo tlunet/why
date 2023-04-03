@@ -24,7 +24,7 @@ def spectralRadius(x):
 nodes, _, Q = genCollocation(M, distr, quadType)
 
 print('quadType = {}\ndistr = {}\nM = {}'.format(quadType, distr, M))
-print('define: D = diag(nodes) / M\n')
+print('define: Dm = diag(nodes) / m\n')
 D = np.diag(nodes) / M
 
 Dinv = []
@@ -36,12 +36,14 @@ for m in range(1, M + 1, 1):
             Dinv_[i, i] = 1 / D[i, i]
     Dinv.append(Dinv_)
 
+print('product from m ... 1')
 pow = np.eye(M)
 for m in range(M):
     pow = (np.eye(M) - Dinv[m] @ Q) @ pow
     print('|prod(I - Dinv[m] Q)|_max = {:<7.4e}, m = 1, ..., {:<3}        ro(prod) = {}'.format(np.max(np.abs(pow)), m+1, max(np.abs(np.linalg.eigvals(pow)))))
 
 print('----------------')
+print('product from 1 ... m')
 p = np.eye(M)
 for m in range(M):
     p = (np.eye(M) - np.linalg.solve(np.diag(np.diag(Q)), Q)) @ p
