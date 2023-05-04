@@ -181,7 +181,7 @@ class IMEXSDCCore(object):
 
     @classmethod
     def _setSweep(cls, k):
-        if cls.initSweep == 'QDelta':
+        if cls.initSweep == 'QDELTA':
             k += 1
         # Eventually change implicit QDelta during sweeps
         if not isinstance(cls.implSweep, str):

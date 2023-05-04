@@ -341,3 +341,33 @@ def genQMatrices(M, distr, quadType, sweepType):
         'Q': Q,
         'QDelta': QDelta
     }
+
+
+def getIterMatrixSDC(M, distr, quadType, sweepType, nSweep, lamDt):
+    nodes, _, Q = genCollocation(M, distr, quadType)
+    
+    R = np.eye(M)
+    for k in range(nSweep):
+        
+        # Determine sweepType
+        if not isinstance(sweepType, str):
+            # List of sweeps
+            try:
+                # Takes k'st sweepType in list
+                sType = sweepType[k]
+            except KeyError:
+                # Take last sweepType in list
+                sType = sweepType[-1]
+        else:
+            # Only one sweepType given
+            sType = sweepType
+            
+        # Compute QDelta matrix
+        QDelta = genQDelta(nodes, sType, Q)[0]
+    
+        # Multiply iteration matrix for each sweeps
+        ImQd = (np.eye(M)-lamDt*QDelta)
+        R = np.linalg.solve(ImQd, Q-QDelta) @ R
+        R *= lamDt
+        
+    return R

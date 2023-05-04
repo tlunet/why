@@ -13,11 +13,13 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 3
+M = 5
 nodeDistr = 'LEGENDRE'
-quadType = 'RADAU-RIGHT'
+quadType = 'LOBATTO'
 # -- SDC settings
-sweepType = ['BEPAR', 'DNODES']
+varSweeps = [f'DNODES-{i+1}' for i in range(M)]
+sweepType = ['BEPAR', 'BEPAR', 'DNODES']
+sweepType = varSweeps
 initSweep = 'QDELTA'
 collUpdate = False
 # -- plot settings
@@ -62,5 +64,5 @@ def plotStabContour(nSweep):
 
     return stab
 
-for nSweep in [1, 2]:
+for nSweep in [1, 2, 3]:
     stab = plotStabContour(nSweep)

@@ -11,7 +11,7 @@ from pycode.qmatrix import genCollocation
 
 # change these:
 ############################
-M = 10
+M = 3
 quadType = 'RADAU-RIGHT'
 distr = 'LEGENDRE'
 ############################

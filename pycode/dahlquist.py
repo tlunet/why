@@ -44,7 +44,6 @@ class IMEXSDC(IMEXSDCCore):
         # Instanciate list of solver (ony first time step)
         self.lhs = [None] * self.M
 
-        self.dt = None
         self.axpy = blas.get_blas_funcs('axpy', dtype=self.u.dtype)
 
     def _evalImplicit(self, lamIU):

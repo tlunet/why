@@ -25,14 +25,15 @@ quadType = 'RADAU-RIGHT'
 #     ('OPT-QMQD-0', '--o'),
 #     ('OPT-SPECK-0', '--s'),
 #     ]
-varSweeps = [f'DNODES-{i+1}' for i in range(M)]
+varSweeps = ['BEPAR']+[f'DNODES-{i+1}' for i in range(M)]
 listImplSweeps = [
     (varSweeps, '--^'),
     (varSweeps[-1::-1], '--o'),
     (['BEPAR', 'DNODES'], '->'),
     ('LU', '-s'),
-    ('BEPAR', '-p'),
-    ('OPT-SPECK-0', '-*')
+    ('DNODES', '-p'),
+    ('OPT-SPECK-0', '-*'),
+    ('BEPAR', '->'),
     ]
 explSweep = 'PIC'
 initSweep = 'COPY'
@@ -41,7 +42,7 @@ collUpdate = False
 u0 = 1.0
 lambdaI = 1j-1
 lambdaE = 0
-tEnd = 200*np.pi
+tEnd = 2*np.pi
 nSteps = 1
 # -----------------------------------------------------------------------------
 
