@@ -23,7 +23,7 @@ if quadType in ['LOBATTO', 'RADAU-LEFT']:
     QNum = QNum[1:, 1:]
     nodes = nodes[1:]
 
-qDetNum = (-1)**(M+1) * np.prod(nodes)/sp.special.factorial(M)
+qDetNum = np.prod(nodes)/sp.special.factorial(M)
 
 
 qCoeffs = [[sy.Symbol('q_{'+str(i)+','+str(j)+'}')

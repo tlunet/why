@@ -10,7 +10,7 @@ import scipy as sp
 from pycode.qmatrix import genCollocation
 
 M = 3
-quadType = 'RADAU-LEFT'
+quadType = 'LOBATTO'
 distr = 'LEGENDRE'
 
 nodes, _, QFull = genCollocation(M, distr, quadType)
@@ -20,7 +20,7 @@ if quadType in ['LOBATTO', 'RADAU-LEFT']:
     Q = Q[1:, 1:]
     nodes = nodes[1:]
 
-qDetTh = (-1)**(M+1) * np.prod(nodes)/sp.special.factorial(M)
+qDetTh = np.prod(nodes)/sp.special.factorial(M)
 
 qDetNum = np.linalg.det(Q)
 
