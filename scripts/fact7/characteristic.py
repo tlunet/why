@@ -11,7 +11,7 @@ import scipy.optimize as sco
 import sympy as sy
 from pycode.qmatrix import genCollocation
 
-M = 3
+M = 4
 quadType = 'GAUSS'
 distr = 'LEGENDRE'
 fullSym = True
@@ -27,7 +27,7 @@ if quadType in ['LOBATTO', 'RADAU-LEFT']:
 qDetNum = np.prod(nodes)/sp.special.factorial(M)
 
 
-qCoeffs = [[sy.Symbol('q_{'+str(i)+','+str(j)+'}')
+qCoeffs = [[sy.Symbol('q_{'+str(j)+','+str(i)+'}')
             for i in range(nCoeffs)]
            for j in range(nCoeffs)]
 
@@ -119,6 +119,16 @@ if fullSym:
         print('Found solution(s) symbolically')
     else:
         print('Solving numerically')
+        
+        Q = sy.Matrix(QNum)
+        Korig =  D.inv()*Q - sy.eye(nCoeffs)
+        K = D.inv()*Q - (1+lam)*sy.eye(nCoeffs)
+        
+        poly = sy.poly(K.det(), lam)
+        coeffs = poly.coeffs()
+        xProd = sy.prod(xCoeffs)
+        equations = [c*xProd for c in coeffs[1:]]
+        
         sol = [sy.nsolve(equations, xCoeffs, nodes)]
         if len(sol) > 0:
             print('Found solution numerically')

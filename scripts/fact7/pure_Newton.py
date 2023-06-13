@@ -9,17 +9,8 @@ import numpy as np
 import scipy as sp
 from pycode.qmatrix import genCollocation
 
-def f(x):
-    c = 1
-    y = np.empty_like(x)
-    K = np.diag(1/np.array(x)) @ Q - np.eye(M)
-    for z in range(M):
-        y[z] = np.linalg.det(c * np.eye(M) + c/(z + 1) * K) - c ** M
-    return y
-
-
 M = 5
-quadType = 'GAUSS'
+quadType = 'LOBATTO'
 distr = 'LEGENDRE'
 
 
@@ -27,10 +18,20 @@ distr = 'LEGENDRE'
 # RADAU-LEFT until 4
 
 nodes, _, Q = genCollocation(M, distr, quadType)
+
 if quadType in ['LOBATTO', 'RADAU-LEFT']:
     Q = Q[1:, 1:]
     nodes = nodes[1:]
     M = M-1
+    
+def f(x):
+    c = 1
+    y = np.empty_like(x)
+    K = np.diag(1/np.array(x)) @ Q - np.eye(M)
+    for i, z in enumerate(range(M)):
+        y[i] = np.linalg.det(c * np.eye(M) + c/(z+1) * K) - c ** M
+    return y
+
 
 sol = sp.optimize.root(f, nodes/M, tol=1e-14, method='hybr')
 print(sol)
