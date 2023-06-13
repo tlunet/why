@@ -32,7 +32,7 @@ if quadType in ['LOBATTO', 'RADAU-LEFT']:
     nodes = nodes[1:]
     M = M-1
 
-sol = sp.optimize.root(f, nodes, tol=1e-16, method='hybr')
+sol = sp.optimize.root(f, nodes/M, tol=1e-14, method='hybr')
 print(sol)
 x = sol.x
 print()

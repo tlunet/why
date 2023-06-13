@@ -11,10 +11,10 @@ import scipy.optimize as sco
 import sympy as sy
 from pycode.qmatrix import genCollocation
 
-M = 9
-quadType = 'LOBATTO'
-distr = 'EQUID'
-fullSym = False
+M = 3
+quadType = 'GAUSS'
+distr = 'LEGENDRE'
+fullSym = True
 
 nodes, _, QNum = genCollocation(M, distr, quadType)
 
@@ -52,6 +52,15 @@ def addMIN3Solutions(sol):
     coeffs = None
     if distr == 'LEGENDRE':
         if quadType == 'LOBATTO':
+            if M == 7:
+                coeffs = [
+                    0.18827968699454273,
+                    0.1307213945012976,
+                    0.04545003319140543,
+                    0.08690617895312261,
+                    0.12326429119922168,
+                    0.13815746843252427,
+                ]
             if M == 5:
                 coeffs = [0.2994085231050721, 0.07923154575177252, 0.14338847088077,
                           0.17675509273708057]
@@ -101,7 +110,10 @@ if fullSym:
     # equations = [c.subs({xProd: qDet}) for c in nullCoeffs]
 
     print('Solving symbolically')
-    sol = sy.solve(equations, *xCoeffs)
+    if M < 3:
+        sol = sy.solve(equations, *xCoeffs)
+    else:
+        sol = []
 
     if len(sol) > 0:
         print('Found solution(s) symbolically')
@@ -140,7 +152,7 @@ else:
         vals = [np.linalg.det(K)-1 for K in kMats]
         return np.array(vals)
 
-    sol = [sco.fsolve(func, nodes/M)]
+    sol = [sco.fsolve(func, nodes/M, xtol=1e-14)]
     addMIN3Solutions(sol)
 
     for xCoeffNum in sol:
