@@ -13,11 +13,11 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 5
+M = 4
 nodeDistr = 'LEGENDRE'
-quadType = 'LOBATTO'
+quadType = 'RADAU-RIGHT'
 # -- SDC settings
-implSweep = ['BEPAR', 'DNODES-1', 'DNODES-2', 'DNODES-3']
+implSweep = ['BEPAR', 'MIN-SR-S']
 explSweep = 'PIC'
 initSweep = 'QDELTA'
 collUpdate = False
@@ -27,7 +27,7 @@ lambdaI = 1j-0.1
 lambdaE = 0
 # -----------------------------------------------------------------------------
 
-listNumStep = [2**(i+2) for i in range(11)]
+listNumStep = [2**(i+2) for i in range(8)]
 
 IMEXSDC.setParameters(
     M=M, quadType=quadType, nodeDistr=nodeDistr,

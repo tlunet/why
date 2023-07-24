@@ -13,37 +13,38 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 3
+M = 4
 nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
-# listImplSweeps = [
-#     ('BE', '-^'),
-#     ('LU', '-o'),
-#     ('BEPAR', '-s'),
-#     ('OPT-NR-0', '--^'),
-#     ('OPT-QMQD-0', '--o'),
-#     ('OPT-SPECK-0', '--s'),
-#     ]
-varSweeps = ['BEPAR']+[f'DNODES-{i+1}' for i in range(M)]
 listImplSweeps = [
-    (varSweeps, '--^'),
-    (varSweeps[-1::-1], '--o'),
-    (['BEPAR', 'DNODES'], '->'),
-    ('LU', '-s'),
-    ('DNODES', '-p'),
-    ('OPT-SPECK-0', '-*'),
-    ('BEPAR', '->'),
+    ('BE', '-^'),
+    ('LU', '-o'),
+    ('BEPAR', '-s'),
+    ('MIN-SR-S', '--^'),
+    ('MIN-SR-NS', '--o'),
+    (['BEPAR', 'MIN-SR-S'], '--s'),
+    (['BEPAR', 'MIN-SR-NS'], '--p'),
     ]
+# varSweeps = ['BEPAR']+[f'DNODES-{i+1}' for i in range(M)]
+# listImplSweeps = [
+#     (varSweeps, '--^'),
+#     (varSweeps[-1::-1], '--o'),
+#     (['BEPAR', 'DNODES'], '->'),
+#     ('LU', '-s'),
+#     ('DNODES', '-p'),
+#     ('OPT-SPECK-0', '-*'),
+#     ('BEPAR', '->'),
+#     ]
 explSweep = 'PIC'
-initSweep = 'COPY'
+initSweep = 'QDELTA'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
-lambdaI = 1j-1
+lambdaI = 1j
 lambdaE = 0
 tEnd = 2*np.pi
-nSteps = 1
+nSteps = 10
 # -----------------------------------------------------------------------------
 
 def extractResiduals(solver, dt):
@@ -63,7 +64,7 @@ for (implSweep, symbol) in listImplSweeps:
     solver = IMEXSDC(u0, lambdaI, lambdaE)
 
     residuals = []
-    for nSweep in range(10):
+    for nSweep in range(6):
 
         IMEXSDC.nSweep = nSweep
 

@@ -11,10 +11,10 @@ import scipy.optimize as sco
 import sympy as sy
 from pycode.qmatrix import genCollocation
 
-M = 4
-quadType = 'GAUSS'
+M = 5
+quadType = 'RADAU-RIGHT'
 distr = 'LEGENDRE'
-fullSym = True
+fullSym = False
 
 nodes, _, QNum = genCollocation(M, distr, quadType)
 

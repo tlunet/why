@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import numpy as np
+import scipy as sp
 from scipy.linalg import lu
 
 try:
@@ -220,13 +221,12 @@ def genQDelta(nodes, sweepType, Q):
 
     # Extract informations from Q matrix
     M = deltas.size
-    if sweepType.startswith('OPT') or sweepType == 'WEIRD':
-        leftIsNode = np.allclose(Q[0], 0)
-        rightIsNode = np.isclose(Q[-1].sum(), 1)
-        quadType = 'LOBATTO' if (leftIsNode and rightIsNode) else \
-            'RADAU-LEFT' if leftIsNode else \
-            'RADAU-RIGHT' if rightIsNode else \
-            'GAUSS'
+    leftIsNode = np.allclose(Q[0], 0)
+    rightIsNode = np.isclose(Q[-1].sum(), 1)
+    quadType = 'LOBATTO' if (leftIsNode and rightIsNode) else \
+        'RADAU-LEFT' if leftIsNode else \
+        'RADAU-RIGHT' if rightIsNode else \
+        'GAUSS'
 
     # Compute QDelta
     QDelta = np.zeros((M, M))
@@ -266,13 +266,16 @@ def genQDelta(nodes, sweepType, Q):
                              f'{oType}-{M}-{quadType}-{idx}')
     elif sweepType == 'BEPAR':
         QDelta[:] = np.diag(nodes)
+        
     elif sweepType == 'WEIRD':
+        
         try:
             coeffs = WEIRD_COEFFS[quadType][M]
             QDelta[:] = np.diag(coeffs)
         except (KeyError, IndexError):
             raise ValueError('no WEIRD diagonal coefficients for '
                              f'{M}-{quadType} nodes')
+            
     elif sweepType.startswith('DNODES'):
         factor = sweepType.split('-')[-1]
         if factor == 'DNODES':
@@ -283,6 +286,33 @@ def genQDelta(nodes, sweepType, Q):
             except (ValueError, TypeError):
                 raise ValueError(f"DNODES don't accept {factor} as parameter")
         QDelta[:] = np.diag(nodes)/factor
+    
+    elif sweepType == "MIN-SR-NS":
+    
+        QDelta[:] = np.diag(nodes/M)
+        
+    elif sweepType == "MIN-SR-S":
+        
+        nCoeffs = M
+        if quadType in ['LOBATTO', 'RADAU-LEFT']:
+            nCoeffs -= 1;
+            Q = Q[1:, 1:]
+            nodes = nodes[1:]
+        
+        def func(coeffs):
+            coeffs = np.asarray(coeffs)
+            kMats = [(1-z)*np.eye(nCoeffs) + z*np.diag(1/coeffs) @ Q
+                     for z in nodes]
+            vals = [np.linalg.det(K)-1 for K in kMats]
+            return np.array(vals)
+         
+        coeffs = sp.optimize.fsolve(func, nodes/M, xtol=1e-14)
+        
+        if quadType in ['LOBATTO', 'RADAU-LEFT']:
+            coeffs = [0] + list(coeffs)
+            
+        QDelta[:] = np.diag(coeffs)
+        
     else:
         raise NotImplementedError(f'sweepType={sweepType}')
     return QDelta, dtau

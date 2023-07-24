@@ -13,17 +13,17 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 3
+M = 4
 nodeDistr = 'LEGENDRE'
-quadType = 'LOBATTO'
+quadType = 'RADAU-RIGHT'
 # -- SDC settings
-implSweep = ['BEPAR', 'DNODES']
+implSweep = ['BEPAR', 'MIN-SR-NS']
 explSweep = 'PIC'
 initSweep = 'QDELTA'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
-lambdaI = 1j-0.1
+lambdaI = 1j
 lambdaE = 0
 tEnd = 2*np.pi
 nSteps = 10
