@@ -46,7 +46,7 @@ lambdaI = 1j
 lambdaE = 0
 lam = lambdaI + lambdaE
 tEnd = np.pi
-nSteps = 1
+nSteps = 10
 # -----------------------------------------------------------------------------
 
 def extractResiduals(solver, dt):
@@ -89,13 +89,13 @@ for (implSweep, symbol) in listImplSweeps:
 
 plt.xlabel(r'Sweeps')
 plt.ylabel(r'Maximum residuals')
-# plt.ylim(1e-13, 1)
+plt.ylim(ymax=10)
 textArgs = dict(
     fontsize=13,
     bbox=dict(boxstyle="round",
               ec=(0.5, 0.5, 0.5),
               fc=(0.8, 0.8, 0.8)))
-plt.text(2.75, 1, 
+plt.text(2.5, 1, 
          r'$\lambda='f'{lam}$, '
          r'$\Delta T='f'{dt:.2f}$, '
          r'$N_{steps}='f'{nSteps}$', **textArgs)
