@@ -23,8 +23,9 @@ listImplSweeps = [
     ('BEPAR', '-s'),
     ('MIN-SR-S', '--^'),
     ('MIN-SR-NS', '--o'),
-    (['BEPAR', 'MIN-SR-S'], '--s'),
-    (['BEPAR', 'MIN-SR-NS'], '--p'),
+    ('MIN3', '-*'),
+    # (['BEPAR', 'MIN-SR-S'], '--s'),
+    # (['BEPAR', 'MIN-SR-NS'], '--p'),
     ]
 # varSweeps = ['BEPAR']+[f'DNODES-{i+1}' for i in range(M)]
 # listImplSweeps = [
@@ -37,14 +38,14 @@ listImplSweeps = [
 #     ('BEPAR', '->'),
 #     ]
 explSweep = 'PIC'
-initSweep = 'QDELTA'
+initSweep = 'COPY'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
 lambdaI = 1j
 lambdaE = 0
 tEnd = 2*np.pi
-nSteps = 10
+nSteps = 2
 # -----------------------------------------------------------------------------
 
 def extractResiduals(solver, dt):

@@ -161,7 +161,52 @@ OPT_COEFFS = {
                  (-0.262690, 0.053929, 0.089201, 0.127347, 0.153412),
                  (-0.023117, 0.113279, 0.011166, 0.078374, 0.115008),]
             }
-        }
+        },
+        "MIN3" : {
+            "LEGENDRE": {
+                "LOBATTO": {
+                    2: (0.0, 0.5),
+                    3: (0.0, 0.2113181799416633, 0.3943250920445912),
+                    4: (0.0, 
+                        0.2865524188780046, 
+                        0.11264992497015984, 
+                        0.2583063168320655),
+                    5: (0.0, 
+                        0.2994085231050721, 
+                        0.07923154575177252, 
+                        0.14338847088077, 
+                        0.17675509273708057),
+                    },
+                "RADAU-RIGHT": {
+                    2: (0.2584092406077449, 0.6449261740461826),
+                    3: (0.3203856825077055, 0.1399680686269595, 0.3716708461097372),
+                    4: (0.3198786751412953, 
+                        0.08887606314792469, 
+                        0.1812366328324738, 
+                        0.23273925017954),
+                    5: (0.2818591930905709,
+                        0.2011358490453793,
+                        0.06274536689514164,
+                        0.11790265267514095,
+                        0.1571629578515223),
+                    }
+            },
+            "EQUID": {
+                "RADAU-RIGHT": {
+                    2: (0.3749891032632652, 0.6666472946796036),
+                    3: (0.2046955744931575, 0.3595744268324041, 0.5032243650307717),
+                    4: (0.13194852204686872, 
+                        0.2296718892453916, 
+                        0.3197255970017318, 
+                        0.405619746972393),
+                    5: (0.0937126798932547,
+                        0.1619131388001843,
+                        0.22442341539247537,
+                        0.28385142992912565,
+                        0.3412523013467262),
+                    }
+            }
+        },
     }
 
 # Coefficient allowing A-stability with prolongation=True
@@ -175,6 +220,7 @@ WEIRD_COEFFS = {
     'LOBATTO':
         {3: (0.0, 0.5, 0.5)}}
 
+    
 def genQDelta(nodes, sweepType, Q):
     """
     Generate QDelta matrix for a given node distribution
@@ -203,6 +249,8 @@ def genQDelta(nodes, sweepType, Q):
           then divide by M. Note : DNODES-1 corresponds to BEPAR, and DNODES
           correspond to the diagonal matrix that minimizes the spectral radius
           of Q-QDelta.
+        - MIN3 : the magical diagonal coefficients, if they exists for this 
+          configuration
     
     Q : array (M,M)
         Q matrix associated to the node distribution
@@ -227,6 +275,8 @@ def genQDelta(nodes, sweepType, Q):
         'RADAU-LEFT' if leftIsNode else \
         'RADAU-RIGHT' if rightIsNode else \
         'GAUSS'
+        
+    distr = 'EQUID' if np.allclose(deltas[1:], deltas[1]) else 'LEGENDRE'
 
     # Compute QDelta
     QDelta = np.zeros((M, M))
@@ -311,6 +361,15 @@ def genQDelta(nodes, sweepType, Q):
         if quadType in ['LOBATTO', 'RADAU-LEFT']:
             coeffs = [0] + list(coeffs)
             
+        QDelta[:] = np.diag(coeffs)
+        
+    elif sweepType == 'MIN3':
+        
+        try:
+            coeffs = OPT_COEFFS['MIN3'][distr][quadType][M]
+        except KeyError:
+            raise ValueError('no MIN3 diagonal coefficients for '
+                             f'{distr}-{quadType}-{M}')
         QDelta[:] = np.diag(coeffs)
         
     else:
