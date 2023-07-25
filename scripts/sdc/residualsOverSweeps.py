@@ -44,8 +44,9 @@ collUpdate = False
 u0 = 1.0
 lambdaI = 1j
 lambdaE = 0
-tEnd = 2*np.pi
-nSteps = 2
+lam = lambdaI + lambdaE
+tEnd = np.pi
+nSteps = 1
 # -----------------------------------------------------------------------------
 
 def extractResiduals(solver, dt):
@@ -83,10 +84,22 @@ for (implSweep, symbol) in listImplSweeps:
     sym = '^-' if symbol == '' else symbol
     plt.semilogy(residuals, sym, label=str(implSweep))
 
+
+
+
 plt.xlabel(r'Sweeps')
 plt.ylabel(r'Maximum residuals')
 # plt.ylim(1e-13, 1)
-plt.legend()
+textArgs = dict(
+    fontsize=13,
+    bbox=dict(boxstyle="round",
+              ec=(0.5, 0.5, 0.5),
+              fc=(0.8, 0.8, 0.8)))
+plt.text(2.75, 1, 
+         r'$\lambda='f'{lam}$, '
+         r'$\Delta T='f'{dt:.2f}$, '
+         r'$N_{steps}='f'{nSteps}$', **textArgs)
+plt.legend(loc="lower left")
 plt.grid(True)
 plt.title(f'M={M}, {nodeDistr}, {quadType}, {initSweep}')
 plt.tight_layout()

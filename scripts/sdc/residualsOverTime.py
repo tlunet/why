@@ -25,6 +25,7 @@ collUpdate = False
 u0 = 1.0
 lambdaI = 1j
 lambdaE = 0
+lam = lambdaE+lambdaI
 tEnd = 2*np.pi
 nSteps = 10
 # -----------------------------------------------------------------------------
@@ -67,7 +68,16 @@ for nSweep in [0, 1, 2, 3]:
 plt.xlabel(r'Time')
 plt.ylabel(r'Maximum residuals')
 plt.ylim(1e-6, 1)
-plt.legend()
+textArgs = dict(
+    fontsize=13,
+    bbox=dict(boxstyle="round",
+              ec=(0.5, 0.5, 0.5),
+              fc=(0.8, 0.8, 0.8)))
+plt.text(1, 1e-5, 
+         r'$\lambda='f'{lam}$, '
+         r'$\Delta T='f'{dt:.2f}$, '
+         r'$N_{steps}='f'{nSteps}$', **textArgs)
+plt.legend(loc="lower right")
 plt.grid(True)
 plt.title(IMEXSDC.implSweep)
 plt.tight_layout()
