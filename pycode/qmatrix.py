@@ -8,219 +8,14 @@ try:
     # Relative import (when used as a package module)
     from .nodes import NodesGenerator
     from .lagrange import LagrangeApproximation
+    from .coeffs import OPT_COEFFS, WEIRD_COEFFS
 except ImportError:
     # Absolute import (when used as script)
     from nodes import NodesGenerator
     from lagrange import LagrangeApproximation
+    from coeffs import OPT_COEFFS, WEIRD_COEFFS
 
-# Storage for diagonally optimized QDelta matrices
-OPT_COEFFS = {
-    # Fun fact :
-    # the sum of the diagonal coefficients that minimize the spectral radius of Q-Q_Delta is equal to :
-    # 
-    #                            nCoeffs/order
-    # 
-    # - nCoeffs : number of non-zeros coefficients
-    # - order : collocation order
-    #
-    # In particular :
-    # - GAUSS :       nCoeffs(M) = M,   order(M) = 2M   => sum = 1/2
-    # - RADAU-LEFT :  nCoeffs(M) = M-1, order(M) = 2M-1 => sum = (M-1)/(2M-1)
-    # - RADAU-RIGHT : nCoeffs(M) = M,   order(M) = 2M-1 => sum = M/(2M-1)
-    # - LOBATTO :     nCoeffs(M) = M-1, order(M) = 2M-2 => sum = 1/2
-    "QMQD": {
-        2: {'GAUSS':
-                [(0.105662, 0.394338),  # sum = 1/2 -- coeffs = nodes/M
-                 (0.394338, 0.105662)], # sum = 1/2 -- coeffs = nodes[-1::-1]/M
-            'RADAU-LEFT':
-                [(0.0, 0.333333)],      # sum = 1/3 -> (0, 1/3) -- coeffs = nodes/M
-            'RADAU-RIGHT':
-                [(0.166667, 0.5),       # sum = 2/3 -> (1/6, 1/2) -- coeffs = nodes/M
-                 (0.666667, 0.0)],      # sum = 2/3 -> (2/3, 0)
-            'LOBATTO':
-                [(0.0, 0.5)]            # sum = 1/2 -- coeffs = nodes/M
-            },
-        3: {'GAUSS':
-                [(0.037571, 0.166670, 0.295770),   # sum = 1/2 -- coeffs = nodes/M
-                 (0.156407, 0.076528, 0.267066),   # sum = 1/2
-                 (0.267065, 0.076528, 0.156407),   # sum = 1/2
-                 (0.295766, 0.166666, 0.037567)],  # sum = 1/2
-            'RADAU-LEFT':
-                [(0.0, 0.118350, 0.281650),        # sum = 2/5 -- coeffs = nodes/M
-                 (0.0, 0.322474, 0.077526)],       # sum = 2/5
-            'RADAU-RIGHT':
-                [(0.051682, 0.214981, 0.333333),   # sum = 3/5 -> (11/210, 3/14, 1/3) -- coeffs = nodes/M
-                 (0.233475, 0.080905, 0.285619),   # sum = 3/5
-                 (0.390077, 0.094537, 0.115385),   # sum = 3/5
-                 (0.422474, 0.177525, 0.0)],       # sum = 3/5
-            'LOBATTO':
-                [(0.0, 0.166667, 0.333333),        # sum = 1/2
-                 (0.0, 0.5, 0.0)],                 # sum = 1/2
-            },
-        4: {'GAUSS':
-                [(0.077743, 0.044737, 0.155099, 0.222721),  # sum = 1/2 -- coeffs = nodes/M
-                 (0.131879, 0.039977, 0.121777, 0.204056),  # sum = 1/2
-                 (0.163870, 0.108119, 0.043928, 0.184203),  # sum = 1/2
-                 (0.204603, 0.122324, 0.040523, 0.132426)], # sum = 1/2
-            'RADAU-LEFT':
-                [(0.0, 0.053082, 0.147630, 0.227850),       # sum = 3/7 -- coeffs = nodes/M
-                 (0.0, 0.158930, 0.065439, 0.204202),       # sum = 3/7
-                 (0.0, 0.241626, 0.068757, 0.118188),       # sum = 3/7
-                 (0.0, 0.262554, 0.136489, 0.029530)],      # sum = 3/7
-            'RADAU-RIGHT':
-                [(0.179657, 0.047644, 0.134350, 0.209484),  # sum = 4/7 -- coeffs = nodes/M
-                 (0.243813, 0.054458, 0.117399, 0.156936),  # sum = 4/7
-                 (0.273342, 0.152240, 0.036186, 0.110861),  # sum = 4/7
-                 (0.303862, 0.196902, 0.070838, 0.0)],      # sum = 4/7
-            'LOBATTO':
-                [(0.0, 0.069096, 0.180900, 0.249998),       # sum = 1/2 -- coeffs = nodes/M
-                 (0.0, 0.225168, 0.063361, 0.211471),       # sum = 1/2
-                 (0.0, 0.338774, 0.077899, 0.083337),       # sum = 1/2
-                 (0.0, 0.361804, 0.138197, 0.0)],           # sum = 1/2
-            },
-        5: {'RADAU-RIGHT':
-                [(0.011421, 0.055369, 0.116718, 0.172048, 0.2),       # sum = 5/9 -- coeffs = nodes/M
-                 (0.193913, 0.141717, 0.071975, 0.018731, 0.119556),  # sum = 5/9
-                 (0.205563, 0.143134, 0.036388, 0.073742, 0.10488),   # sum = 5/9
-                 (0.176822, 0.124251, 0.031575, 0.084012, 0.142621)], # sum = 5/9
-            'LOBATTO':
-                [(0.0, 0.035130, 0.100594, 0.166059, 0.200594),  # sum = 1/2 -- coeffs = nodes/M
-                 (0.0, 0.115624, 0.046456, 0.149272, 0.186773),  # sum = 1/2
-                 (0.0, 0.179692, 0.046428, 0.108742, 0.164978),  # sum = 1/2
-                 (0.0, 0.252532, 0.132452, 0.029955, 0.085783)]  # sum = 1/2
-            },
 
-        },
-    "SPECK": {
-        2: {'GAUSS':
-                [(0.166667, 0.5),
-             	 (0.5, 0.166667)],
-            'RADAU-LEFT':
-                [(0.0, 0.333333)],
-            'RADAU-RIGHT':
-                [(0.258418, 0.644949),
-                 (1.074915, 0.155051)],
-            'LOBATTO':
-                [(0.0, 0.5)]
-            },
-        3: {'GAUSS':
-                [(0.07672, 0.258752, 0.419774),
-                 (0.214643, 0.114312, 0.339631),
-                 (0.339637, 0.114314, 0.214647),
-                 (0.419779, 0.258755, 0.076721)],
-            'RADAU-RIGHT':
-                [(0.10405, 0.332812, 0.48129),
-                 (0.320383, 0.139967, 0.371668), # Winner for advection
-                 (0.558747, 0.136536, 0.218466),
-                 (0.747625, 0.404063, 0.055172)],
-            'LOBATTO':
-                [(0.0, 0.211325, 0.394338),
-                 (0.0, 0.788675, 0.105662)]
-            },
-        },
-    "NR": {
-        2: {'GAUSS':
-                [(0.25, 0.25)],
-            'RADAU-LEFT':
-                [(0.0, 0.333333)],
-            'RADAU-RIGHT':
-                [(0.416666, 0.25)],
-            'LOBATTO':
-                [(0.0, 0.5)],
-            },
-        3: {'GAUSS':
-                [(0.152083, 0.279867, 0.198563),
-                 (0.328062, 0.273704, 0.167562),
-                 (0.177932, 0.470270, -0.043369)],
-            'RADAU-LEFT':
-                [(0.0, 0.220412, 0.179587)],
-            'RADAU-RIGHT':
-                [(0.331304, 0.229214, 0.248398),
-                 (0.366962, 0.408431, 0.134487)],
-            'LOBATTO':
-                [(0.0, 0.333333, 0.166666)],
-            },
-        5: {'RADAU-RIGHT':
-                [(0.328759, 0.345207, 0.352007, 0.265738, 0.040074),
-                 (0.354490, 0.316147, 0.251464, 0.294285, 0.128222),
-                 (0.351177, 0.299790, 0.300124, 0.255459, 0.165975)],
-            'LOBATTO':
-                [(0.0, 0.258511, 0.264935, 0.308452, 0.204955),
-                 (0.0, 0.302692, 0.239282, 0.306889, 0.201339),
-                 (0.0, 0.331331, 0.309104, 0.237257, 0.165573),
-                 (0.0, 0.304966, 0.284686, 0.283417, 0.173670)]
-            },
-        },
-        "ADAPT": {
-            3: {'RADAU-RIGHT':
-                [(0.6032189, 0.071476, 0.186304),
-                 (0.8616106, 0.341044, -0.02394),]
-            },
-            5: {'RADAU-RIGHT':
-                [(0.060094, 0.026725, 0.068137, 0.113716, 0.141697),
-                 (-0.262690, 0.053929, 0.089201, 0.127347, 0.153412),
-                 (-0.023117, 0.113279, 0.011166, 0.078374, 0.115008),]
-            }
-        },
-        "MIN3" : {
-            "LEGENDRE": {
-                "LOBATTO": {
-                    2: (0.0, 0.5),
-                    3: (0.0, 0.2113181799416633, 0.3943250920445912),
-                    4: (0.0, 
-                        0.2865524188780046, 
-                        0.11264992497015984, 
-                        0.2583063168320655),
-                    5: (0.0, 
-                        0.2994085231050721, 
-                        0.07923154575177252, 
-                        0.14338847088077, 
-                        0.17675509273708057),
-                    },
-                "RADAU-RIGHT": {
-                    2: (0.2584092406077449, 0.6449261740461826),
-                    3: (0.3203856825077055, 0.1399680686269595, 0.3716708461097372),
-                    4: (0.3198786751412953, 
-                        0.08887606314792469, 
-                        0.1812366328324738, 
-                        0.23273925017954),
-                    5: (0.2818591930905709,
-                        0.2011358490453793,
-                        0.06274536689514164,
-                        0.11790265267514095,
-                        0.1571629578515223),
-                    }
-            },
-            "EQUID": {
-                "RADAU-RIGHT": {
-                    2: (0.3749891032632652, 0.6666472946796036),
-                    3: (0.2046955744931575, 0.3595744268324041, 0.5032243650307717),
-                    4: (0.13194852204686872, 
-                        0.2296718892453916, 
-                        0.3197255970017318, 
-                        0.405619746972393),
-                    5: (0.0937126798932547,
-                        0.1619131388001843,
-                        0.22442341539247537,
-                        0.28385142992912565,
-                        0.3412523013467262),
-                    }
-            }
-        },
-    }
-
-# Coefficient allowing A-stability with prolongation=True
-WEIRD_COEFFS = {
-    'GAUSS':
-        {2: (0.5, 0.5)},
-    'RADAU-RIGHT':
-        {2: (0.5, 0.5)},
-    'RADAU-LEFT':
-        {3: (0.0, 0.5, 0.5)},
-    'LOBATTO':
-        {3: (0.0, 0.5, 0.5)}}
-
-    
 def genQDelta(nodes, sweepType, Q):
     """
     Generate QDelta matrix for a given node distribution
@@ -231,7 +26,7 @@ def genQDelta(nodes, sweepType, Q):
         quadrature nodes, scaled to [0, 1]
     sweepType : str
         Type of sweep, that defines QDelta. Can be selected from :
-            
+
         - BE : Backward Euler sweep (first order)
         - FE : Forward Euler sweep (first order)
         - LU : uses the LU trick
@@ -249,9 +44,9 @@ def genQDelta(nodes, sweepType, Q):
           then divide by M. Note : DNODES-1 corresponds to BEPAR, and DNODES
           correspond to the diagonal matrix that minimizes the spectral radius
           of Q-QDelta.
-        - MIN3 : the magical diagonal coefficients, if they exists for this 
+        - MIN3 : the magical diagonal coefficients, if they exists for this
           configuration
-    
+
     Q : array (M,M)
         Q matrix associated to the node distribution
         (used only when sweepType in [LU, EXACT, OPT-[...], WEIRD]).
@@ -275,7 +70,7 @@ def genQDelta(nodes, sweepType, Q):
         'RADAU-LEFT' if leftIsNode else \
         'RADAU-RIGHT' if rightIsNode else \
         'GAUSS'
-        
+
     distr = 'EQUID' if np.allclose(deltas[1:], deltas[1]) else 'LEGENDRE'
 
     # Compute QDelta
@@ -293,7 +88,7 @@ def genQDelta(nodes, sweepType, Q):
         for i in range(1, M):
             QDelta[i:, :M-i] += np.diag(deltas[1:M-i+1])
         QDelta /= 2.0
-        dtau = deltas[0]/2.0
+        dtau = nodes[0]/2.0
     elif sweepType == 'LU':
         QT = Q.T.copy()
         [_, _, U] = lu(QT, overwrite_a=True)
@@ -316,16 +111,25 @@ def genQDelta(nodes, sweepType, Q):
                              f'{oType}-{M}-{quadType}-{idx}')
     elif sweepType == 'BEPAR':
         QDelta[:] = np.diag(nodes)
-        
+
+    elif sweepType == 'TRAPAR':
+        QDelta[:] = np.diag(nodes/2)
+        dtau = nodes/2
+
+    elif sweepType.startswith('THETAPAR-'):
+        theta = float(sweepType.split('-')[-1])
+        QDelta[:] = theta*np.diag(nodes)
+        dtau = (1-theta)*nodes
+
     elif sweepType == 'WEIRD':
-        
+
         try:
             coeffs = WEIRD_COEFFS[quadType][M]
             QDelta[:] = np.diag(coeffs)
         except (KeyError, IndexError):
             raise ValueError('no WEIRD diagonal coefficients for '
                              f'{M}-{quadType} nodes')
-            
+
     elif sweepType.startswith('DNODES'):
         factor = sweepType.split('-')[-1]
         if factor == 'DNODES':
@@ -336,42 +140,42 @@ def genQDelta(nodes, sweepType, Q):
             except (ValueError, TypeError):
                 raise ValueError(f"DNODES don't accept {factor} as parameter")
         QDelta[:] = np.diag(nodes)/factor
-    
+
     elif sweepType == "MIN-SR-NS":
-    
+
         QDelta[:] = np.diag(nodes/M)
-        
+
     elif sweepType == "MIN-SR-S":
-        
+
         nCoeffs = M
         if quadType in ['LOBATTO', 'RADAU-LEFT']:
             nCoeffs -= 1;
             Q = Q[1:, 1:]
             nodes = nodes[1:]
-        
+
         def func(coeffs):
             coeffs = np.asarray(coeffs)
             kMats = [(1-z)*np.eye(nCoeffs) + z*np.diag(1/coeffs) @ Q
                      for z in nodes]
             vals = [np.linalg.det(K)-1 for K in kMats]
             return np.array(vals)
-         
+
         coeffs = sp.optimize.fsolve(func, nodes/M, xtol=1e-14)
-        
+
         if quadType in ['LOBATTO', 'RADAU-LEFT']:
             coeffs = [0] + list(coeffs)
-            
+
         QDelta[:] = np.diag(coeffs)
-        
+
     elif sweepType == 'MIN3':
-        
+
         try:
             coeffs = OPT_COEFFS['MIN3'][distr][quadType][M]
         except KeyError:
             raise ValueError('no MIN3 diagonal coefficients for '
                              f'{distr}-{quadType}-{M}')
         QDelta[:] = np.diag(coeffs)
-        
+
     else:
         raise NotImplementedError(f'sweepType={sweepType}')
     return QDelta, dtau
@@ -434,10 +238,10 @@ def genQMatrices(M, distr, quadType, sweepType):
 
 def getIterMatrixSDC(M, distr, quadType, sweepType, nSweep, lamDt):
     nodes, _, Q = genCollocation(M, distr, quadType)
-    
+
     R = np.eye(M)
     for k in range(nSweep):
-        
+
         # Determine sweepType
         if not isinstance(sweepType, str):
             # List of sweeps
@@ -450,13 +254,13 @@ def getIterMatrixSDC(M, distr, quadType, sweepType, nSweep, lamDt):
         else:
             # Only one sweepType given
             sType = sweepType
-            
+
         # Compute QDelta matrix
         QDelta = genQDelta(nodes, sType, Q)[0]
-    
+
         # Multiply iteration matrix for each sweeps
         ImQd = (np.eye(M)-lamDt*QDelta)
         R = np.linalg.solve(ImQd, Q-QDelta) @ R
         R *= lamDt
-        
+
     return R

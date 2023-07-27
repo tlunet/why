@@ -14,10 +14,10 @@ from pycode.dahlquist import IMEXSDC
 # Change these ...
 # -- collocation settings
 M = 4
-nodeDistr = 'LEGENDRE'
+nodeDistr = 'EQUID'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
-implSweep = ['BEPAR', 'MIN-SR-S']
+implSweep = ['THETAPAR-0.6', 'MIN-SR-S']
 explSweep = 'PIC'
 initSweep = 'QDELTA'
 collUpdate = False
@@ -73,5 +73,5 @@ plt.ylabel(r'error ($L_{inf}$)')
 plt.ylim(1e-10, 1e1)
 plt.legend()
 plt.grid(True)
-plt.title(IMEXSDC.implSweep)
+plt.title(f'{IMEXSDC.implSweep}, {M}-{quadType}-{nodeDistr}')
 plt.tight_layout()

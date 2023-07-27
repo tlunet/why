@@ -38,8 +38,7 @@ class IMEXSDC(IMEXSDCCore):
         self.rhs, self.u0 = c(), c()
         self.lamIU = deque([[c() for _ in range(self.M)] for _ in range(2)])
         self.lamEU = deque([[c() for _ in range(self.M)] for _ in range(2)])
-        if not self.leftIsNode():
-            self.lamEU0, self.lamIU0 = c(), c()
+        self.lamEU0, self.lamIU0 = c(), c()
 
         # Instanciate list of solver (ony first time step)
         self.lhs = [None] * self.M
@@ -90,19 +89,17 @@ class IMEXSDC(IMEXSDCCore):
         dt = self.dt
         rhs, u0 = self.rhs, self.u0
         lamIUk, lamEUk = self.lamIU[0], self.lamEU[0]
-        if not self.leftIsNode():
-            lamEU0, lamIU0 = self.lamEU0, self.lamIU0
+        lamEU0, lamIU0 = self.lamEU0, self.lamIU0
         axpy = self.axpy
 
         if iType == 'QDELTA':
 
             # Prepare initial field evaluation
-            if not self.leftIsNode():
-                self._evalExplicit(lamEU0)
-                lamEU0 *= dt*self.dtauE
-                if self.dtauI != 0.0:
-                    self._evalImplicit(lamIU0)
-                    axpy(a=dt*self.dtauI, x=lamIU0, y=lamEU0)
+            self._evalExplicit(lamEU0)
+            lamEU0 *= dt*self.dtauE
+            if np.size(self.dtauI) == 1 and self.dtauI != 0.0:
+                self._evalImplicit(lamIU0)
+                axpy(a=dt*self.dtauI, x=lamIU0, y=lamEU0)
 
             # Loop on all quadrature nodes
             for i in range(self.M):
@@ -110,8 +107,12 @@ class IMEXSDC(IMEXSDCCore):
                 # -- initialize with U0 term
                 np.copyto(rhs, u0)
                 # -- add initial field evaluation
-                if not self.leftIsNode():
+                if np.size(self.dtauI) == 1:
                     rhs += lamEU0
+                else:
+                    if i == 0:
+                        self._evalImplicit(lamIU0)
+                    rhs += lamEU0 + dt*self.dtauI[i]*lamIU0
                 # -- add explicit and implicit terms (already computed)
                 for j in range(i):
                     axpy(a=dt*qE[i, j], x=lamEUk[j], y=rhs)

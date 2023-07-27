@@ -14,10 +14,10 @@ from pycode.dahlquist import IMEXSDC
 # Change these ...
 # -- collocation settings
 M = 4
-nodeDistr = 'LEGENDRE'
+nodeDistr = 'EQUID'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
-implSweep = ['BEPAR', 'MIN-SR-S']
+implSweep = ['THETAPAR-0.6']
 explSweep = 'PIC'
 initSweep = 'QDELTA'
 collUpdate = False
@@ -66,7 +66,7 @@ lSweeps = [1, 2, 3]
 fig, axs = plt.subplots(1, len(lSweeps))
 fig.set_size_inches(len(lSweeps)*4, 4)
 for i, nSweep in enumerate(lSweeps):
-    plotStabContour(axs[i], nSweep=nSweep, 
+    plotStabContour(axs[i], nSweep=nSweep,
                     implSweep=implSweep, explSweep=explSweep, M=M,
                     qType=quadType, forceProl=collUpdate, initSweep=initSweep)
 fig.tight_layout()

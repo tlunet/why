@@ -3,7 +3,7 @@
 """
 Created on Wed Nov  2 12:49:22 2022
 
-Compute the stability contours of SDC for 
+Compute the stability contours of SDC for
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,16 +14,16 @@ from pycode.dahlquist import IMEXSDC
 # Change these ...
 # -- collocation settings
 M = 4
-nodeDistr = 'LEGENDRE'
+nodeDistr = 'EQUID'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
 varSweeps = [f'DNODES-{i+1}' for i in range(M)]
-sweepType = ['BEPAR', 'MIN-SR-S']
+sweepType = ['THETAPAR-0.6']
 # sweepType = varSweeps
 initSweep = 'QDELTA'
 collUpdate = False
 # -- plot settings
-zoom = 5  # the larger, the far away ...
+zoom = 10  # the larger, the far away ...
 # -----------------------------------------------------------------------------
 
 u0 = 1.0
