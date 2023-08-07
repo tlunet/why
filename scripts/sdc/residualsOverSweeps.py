@@ -23,10 +23,27 @@ listImplSweeps = [
     ('BEPAR', '-s'),
     ('MIN-SR-S', '--^'),
     ('MIN-SR-NS', '--o'),
-    ('MIN3', '-*'),
+    ('TRAPAR', '-*'),
     # (['BEPAR', 'MIN-SR-S'], '--s'),
     # (['BEPAR', 'MIN-SR-NS'], '--p'),
-    ]
+]
+st1 = 'TRAPAR'
+st2 = 'MIN-SR-NS'
+listImplSweeps = [
+    ('LU', '-^'),
+    ('TRAP', '-o'),
+    ('MIN3', '-s'),
+    ('TRAPAR', '--*'),
+    (['TRAPAR', 'TRAPAR', 'MIN-SR-NS'], '-p'),
+    (['TRAPAR', 'TRAPAR', 'MIN-SR-S'], '-<'),
+    ('MIN-SR-NS', '--p'),
+    ('MIN-SR-S', '--<'),
+    # ([st1]*2 + [st2], '-o'),
+    # ([st2]*3 + [st1], '-p'),
+    # (st2, '-s'),
+    # (['BEPAR', 'MIN-SR-S'], '--s'),
+    # (['BEPAR', 'MIN-SR-NS'], '--p'),
+]
 # varSweeps = ['BEPAR']+[f'DNODES-{i+1}' for i in range(M)]
 # listImplSweeps = [
 #     (varSweeps, '--^'),
@@ -38,21 +55,27 @@ listImplSweeps = [
 #     ('BEPAR', '->'),
 #     ]
 explSweep = 'PIC'
-initSweep = 'COPY'
+initSweep = 'QDELTA'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
 lambdaI = 1j
 lambdaE = 0
 lam = lambdaI + lambdaE
-tEnd = np.pi
-nSteps = 10
+tEnd = np.pi/10
+nSteps = 1
 # -----------------------------------------------------------------------------
+
 
 def extractResiduals(solver, dt):
     lamU = (np.array(solver.lamIU[0]) + np.array(solver.lamEU[0])).ravel()
     lam = solver.lambdaI + solver.lambdaE
     return solver.u0 - lamU/lam + dt * solver.Q @ lamU
+
+
+def extractError(solver, dt):
+    return solver.u - np.exp(lam*dt)*u0
+
 
 plt.figure()
 
@@ -66,7 +89,8 @@ for (implSweep, symbol) in listImplSweeps:
     solver = IMEXSDC(u0, lambdaI, lambdaE)
 
     residuals = []
-    for nSweep in range(6):
+    error = []
+    for nSweep in range(12):
 
         IMEXSDC.nSweep = nSweep
 
@@ -76,15 +100,17 @@ for (implSweep, symbol) in listImplSweeps:
         for i in range(nSteps):
             solver.step(dt)
         residuals += [extractResiduals(solver, dt)]
+        error += [extractError(solver, dt)]
 
     residuals = np.array(residuals)
     residuals = np.linalg.norm(residuals, ord=np.inf, axis=-1)
 
+    error = np.abs(error)
+
     # Plot residuals VS sweeps
     sym = '^-' if symbol == '' else symbol
     plt.semilogy(residuals, sym, label=str(implSweep))
-
-
+    # plt.semilogy(error, sym, label=str(implSweep))
 
 
 plt.xlabel(r'Sweeps')
@@ -95,7 +121,7 @@ textArgs = dict(
     bbox=dict(boxstyle="round",
               ec=(0.5, 0.5, 0.5),
               fc=(0.8, 0.8, 0.8)))
-plt.text(2.5, 1, 
+plt.text(2.5, 1,
          r'$\lambda='f'{lam}$, '
          r'$\Delta T='f'{dt:.2f}$, '
          r'$N_{steps}='f'{nSteps}$', **textArgs)

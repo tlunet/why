@@ -16,7 +16,7 @@ quadType = 'RADAU-RIGHT'
 distr = 'LEGENDRE'
 T = [0, np.pi]
 lamb = 1j
-u_initial = np.ones(M)
+u_initial = 1
 ############################
 
 # returns the MIN-NS matrix
