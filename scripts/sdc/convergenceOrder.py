@@ -14,16 +14,15 @@ from pycode.dahlquist import IMEXSDC
 # Change these ...
 # -- collocation settings
 M = 4
-nodeDistr = 'EQUID'
+nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
-# -- SDC settings
-implSweep = ['THETAPAR-0.6', 'MIN-SR-S']
+implSweep = ['TRAPAR', 'TRAPAR', 'MIN-SR-NS']
 explSweep = 'PIC'
 initSweep = 'QDELTA'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
-lambdaI = 1j-0.1
+lambdaI = 1j
 lambdaE = 0
 # -----------------------------------------------------------------------------
 

@@ -129,6 +129,14 @@ class IMEXSDC(IMEXSDCCore):
             for i in range(1, self.M):
                 np.copyto(lamIUk[i], lamIUk[0])
                 np.copyto(lamEUk[i], lamEUk[0])
+                
+        elif iType == 'ZEROS':
+            np.copyto(self.u, 0)
+            self._evalImplicit(lamIUk[0])
+            self._evalExplicit(lamEUk[0])
+            for i in range(1, self.M):
+                np.copyto(lamIUk[i], lamIUk[0])
+                np.copyto(lamEUk[i], lamEUk[0])
 
         else:
             raise NotImplementedError(f'iType={iType}')
@@ -213,7 +221,7 @@ class IMEXSDC(IMEXSDCCore):
 
         # Performs sweeps
         for k in range(self.nSweep):
-            self._setSweep(k)
+            if self._setSweep(k): self._updateLHS(dt)
             self._sweep()
 
         # Compute prolongation if needed

@@ -181,6 +181,7 @@ class IMEXSDCCore(object):
 
     @classmethod
     def _setSweep(cls, k):
+        updateQDeltaI = False
         if cls.initSweep == 'QDELTA':
             k += 1
         # Eventually change implicit QDelta during sweeps
@@ -190,6 +191,7 @@ class IMEXSDCCore(object):
             except IndexError:
                 iSweepName = cls.implSweep[-1]
             cls.QDeltaI = genQDelta(cls.nodes, iSweepName, cls.Q)[0]
+            updateQDeltaI = True
         # Eventually change explicit QDelta during sweeps
         if not isinstance(cls.explSweep, str):
             try:
@@ -197,6 +199,7 @@ class IMEXSDCCore(object):
             except IndexError:
                 eSweepName = cls.explSweep[-1]
             cls.QDeltaE = genQDelta(cls.nodes, eSweepName, cls.Q)[0]
+        return updateQDeltaI
 
 
 

@@ -14,11 +14,11 @@ from pycode.dahlquist import IMEXSDC
 # Change these ...
 # -- collocation settings
 M = 4
-nodeDistr = 'EQUID'
+nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
 varSweeps = [f'DNODES-{i+1}' for i in range(M)]
-sweepType = ['THETAPAR-0.6']
+sweepType = ['TRAPAR', 'TRAPAR', 'MIN-SR-S']
 # sweepType = varSweeps
 initSweep = 'QDELTA'
 collUpdate = False
