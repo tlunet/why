@@ -9,8 +9,8 @@ import numpy as np
 import scipy as sp
 from pycode.qmatrix import genCollocation
 
-M = 5
-quadType = 'LOBATTO'
+M = 3
+quadType = 'RADAU-RIGHT'
 distr = 'LEGENDRE'
 
 
@@ -46,4 +46,7 @@ for i in range(M):
         np.max(np.abs(Kpow)), i + 1, max(np.abs(np.linalg.eigvals(Kpow)))))
 
 
-
+print(Q)
+print(x)
+print(1/x)
+print(nodes/M**2)

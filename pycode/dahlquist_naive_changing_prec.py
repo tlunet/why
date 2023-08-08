@@ -77,7 +77,7 @@ plt.semilogy(res_MIN_NS_r, 'o:')
 plt.semilogy(res_BEPAR_r, 'x:')
 plt.semilogy(res_MIX_r, '<:')
 
-plt.legend(['MIN-NS', 'BEPAR', '5 BEPAR + 5 MIN-RS', 'MIN-NS + ref', 'BEPAR + ref', '5 BEPAR + 5 MIN-RS + ref'])
+plt.legend(['MIN-NS', 'BEPAR', '5 BEPAR + 5 MIN-RS'])
 
 plt.show()
 
