@@ -13,56 +13,27 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 4
+M = 8
 nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
 listImplSweeps = [
-    ('BE', '-^'),
-    ('LU', '-o'),
-    ('BEPAR', '-s'),
-    ('MIN-SR-S', '--^'),
-    ('MIN-SR-NS', '--o'),
-    ('TRAPAR', '-*'),
-    # (['BEPAR', 'MIN-SR-S'], '--s'),
-    # (['BEPAR', 'MIN-SR-NS'], '--p'),
-]
-st1 = 'TRAPAR'
-st2 = 'MIN-SR-NS'
-listImplSweeps = [
     ('LU', '-^'),
-    ('TRAP', '-o'),
-    ('MIN3', '-s'),
+    #('MIN3', '-s'),
     ('TRAPAR', '--*'),
-    (['TRAPAR', 'TRAPAR', 'MIN-SR-NS'], '-p'),
-    (['TRAPAR', 'TRAPAR', 'MIN-SR-S'], '-<'),
-    ('MIN-SR-NS', '--p'),
-    ('MIN-SR-S', '--<'),
-    # ([st1]*2 + [st2], '-o'),
-    # ([st2]*3 + [st1], '-p'),
-    # (st2, '-s'),
-    # (['BEPAR', 'MIN-SR-S'], '--s'),
-    # (['BEPAR', 'MIN-SR-NS'], '--p'),
+    (['MIN-SR-NS'], '-p'),
+    (['MIN-SR-S'], '-p'),
+    (['DNODES-2', 'DNODES-3', 'DNODES-4', 'DNODES-5'], '-<')
 ]
-# varSweeps = ['BEPAR']+[f'DNODES-{i+1}' for i in range(M)]
-# listImplSweeps = [
-#     (varSweeps, '--^'),
-#     (varSweeps[-1::-1], '--o'),
-#     (['BEPAR', 'DNODES'], '->'),
-#     ('LU', '-s'),
-#     ('DNODES', '-p'),
-#     ('OPT-SPECK-0', '-*'),
-#     ('BEPAR', '->'),
-#     ]
 explSweep = 'PIC'
-initSweep = 'QDELTA'
+initSweep = 'COPY'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
 lambdaI = 1j
 lambdaE = 0
 lam = lambdaI + lambdaE
-tEnd = np.pi/10
+tEnd = np.pi
 nSteps = 1
 # -----------------------------------------------------------------------------
 
@@ -78,7 +49,7 @@ def extractError(solver, dt):
 
 
 plt.figure()
-
+min_err = np.inf
 for (implSweep, symbol) in listImplSweeps:
 
     IMEXSDC.setParameters(
@@ -106,12 +77,15 @@ for (implSweep, symbol) in listImplSweeps:
     residuals = np.linalg.norm(residuals, ord=np.inf, axis=-1)
 
     error = np.abs(error)
+    min_err = min(min_err, min(error))
 
     # Plot residuals VS sweeps
     sym = '^-' if symbol == '' else symbol
     plt.semilogy(residuals, sym, label=str(implSweep))
     # plt.semilogy(error, sym, label=str(implSweep))
 
+
+plt.semilogy(list(range(12)), min_err * np.ones(12), 'k--')
 
 plt.xlabel(r'Sweeps')
 plt.ylabel(r'Maximum residuals')
@@ -129,3 +103,4 @@ plt.legend(loc="lower left")
 plt.grid(True)
 plt.title(f'M={M}, {nodeDistr}, {quadType}, {initSweep}')
 plt.tight_layout()
+plt.show()
