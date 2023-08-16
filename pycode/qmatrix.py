@@ -116,6 +116,10 @@ def genQDelta(nodes, sweepType, Q):
         QDelta[:] = np.diag(nodes/2)
         dtau = nodes/2
 
+    elif sweepType == "TEST":
+
+        QDelta[:] = 1 / 0.7 * np.diag(nodes/M)
+
     elif sweepType.startswith('THETAPAR-'):
         theta = float(sweepType.split('-')[-1])
         QDelta[:] = theta*np.diag(nodes)
