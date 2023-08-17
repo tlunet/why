@@ -13,17 +13,17 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 4
+M = 3
 nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
-implSweep = ['TRAPAR', 'TRAPAR', 'MIN-SR-NS']
+implSweep = ['IMEX-NS']
 explSweep = 'PIC'
-initSweep = 'QDELTA'
+initSweep = 'COPY'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
-lambdaI = 1j
-lambdaE = 0
+lambdaI = 0.7j
+lambdaE = 0.3j
 # -----------------------------------------------------------------------------
 
 listNumStep = [2**(i+2) for i in range(8)]
@@ -31,7 +31,7 @@ listNumStep = [2**(i+2) for i in range(8)]
 IMEXSDC.setParameters(
     M=M, quadType=quadType, nodeDistr=nodeDistr,
     implSweep=implSweep, explSweep=explSweep, initSweep=initSweep,
-    forceProl=collUpdate)
+    forceProl=collUpdate, lambdaI=lambdaI, lambdaE=lambdaE)
 
 solver = IMEXSDC(u0, lambdaI, lambdaE)
 
@@ -74,3 +74,4 @@ plt.legend()
 plt.grid(True)
 plt.title(f'{IMEXSDC.implSweep}, {M}-{quadType}-{nodeDistr}')
 plt.tight_layout()
+plt.show()

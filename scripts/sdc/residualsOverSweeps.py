@@ -13,7 +13,11 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 8
+M = 3
+
+test = ['IMEX-1', 'IMEX-2', 'IMEX-3', 'IMEX-4', 'IMEX-5', 'IMEX-6', 'IMEX-7', 'IMEX1-8']
+dnodes = ['DNODES-1', 'DNODES-2', 'DNODES-3', 'DNODES-4', 'DNODES-5', 'DNODES-6', 'DNODES-7', 'DNODES-8']
+
 nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
@@ -23,15 +27,17 @@ listImplSweeps = [
     ('TRAPAR', '--*'),
     (['MIN-SR-NS'], '-p'),
     (['MIN-SR-S'], '-p'),
-    (['DNODES-2', 'DNODES-3', 'DNODES-4', 'DNODES-5'], '-<')
+    (['IMEX-NS', '--X']),
+    (test[1:M], '--X'),
+    (dnodes[1:M], '-<')
 ]
 explSweep = 'PIC'
 initSweep = 'COPY'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
-lambdaI = 1j
-lambdaE = 0
+lambdaI = 0.6j
+lambdaE = 0.4j
 lam = lambdaI + lambdaE
 tEnd = np.pi
 nSteps = 1
@@ -48,14 +54,14 @@ def extractError(solver, dt):
     return solver.u - np.exp(lam*dt)*u0
 
 
-plt.figure()
+plt.figure(figsize=(10, 8))
 min_err = np.inf
 for (implSweep, symbol) in listImplSweeps:
 
     IMEXSDC.setParameters(
         M=M, quadType=quadType, nodeDistr=nodeDistr,
         implSweep=implSweep, explSweep=explSweep, initSweep=initSweep,
-        forceProl=collUpdate)
+        forceProl=collUpdate, lambdaI=lambdaI, lambdaE=lambdaE)
 
     solver = IMEXSDC(u0, lambdaI, lambdaE)
 
