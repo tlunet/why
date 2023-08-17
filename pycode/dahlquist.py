@@ -171,7 +171,7 @@ class IMEXSDC(IMEXSDCCore):
             axpy(a=-dt*qI[i, i], x=lamIUk[i], y=rhs)
             # Solve system and store node solution in solver state
             self._solveAndStoreState(i)
-            # Evaluate implicit and implicit terms with current state
+            # Evaluate implicit and explicit terms with current state
             self._evalImplicit(lamIUk1[i])
             self._evalExplicit(lamEUk1[i])
 
@@ -209,7 +209,9 @@ class IMEXSDC(IMEXSDCCore):
         """
 
         # Initialize and/or update LHS terms, depending on dt
-        if dt != self.dt:
+        updateQDeltaI = self._setSweep(
+            -1 if self.initSweep == 'QDELTA' else 0, self.lambdaI, self.lambdaE)        
+        if dt != self.dt or updateQDeltaI:
             self._updateLHS(dt)
             self.dt = dt
 
@@ -221,7 +223,8 @@ class IMEXSDC(IMEXSDCCore):
 
         # Performs sweeps
         for k in range(self.nSweep):
-            if self._setSweep(k, self.lambdaI, self.lambdaE): self._updateLHS(dt)
+            if self._setSweep(k, self.lambdaI, self.lambdaE): 
+                self._updateLHS(dt)
             self._sweep()
 
         # Compute prolongation if needed

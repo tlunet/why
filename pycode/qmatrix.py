@@ -95,8 +95,17 @@ def genQDelta(nodes, sweepType, Q, lambdaI, lambdaE):
         QDelta = U.T
     elif sweepType == 'EXACT':
         QDelta = np.copy(Q)
-    elif sweepType == 'PIC':
+    elif sweepType.startswith("PIC"):
         QDelta = np.zeros(Q.shape)
+        factor = sweepType.split('-')[-1]
+        if factor == 'PIC':
+            factor = 1.0
+        else:
+            try:
+                factor = float(factor)
+            except (ValueError, TypeError):
+                raise ValueError(f"DNODES does not accept {factor} as parameter")
+        dtau = factor
     elif sweepType.startswith('OPT'):
         try:
             oType, idx = sweepType[4:].split('-')
@@ -150,7 +159,7 @@ def genQDelta(nodes, sweepType, Q, lambdaI, lambdaE):
                 factor = float(factor)
             except (ValueError, TypeError):
                 raise ValueError(f"DNODES don't accept {factor} as parameter")
-        QDelta[:] = np.diag(nodes)/factor
+        QDelta[:] = np.diag(nodes/factor)
 
     elif sweepType == "MIN-SR-NS":
 

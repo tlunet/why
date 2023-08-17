@@ -13,17 +13,19 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 3
+M = 4
 nodeDistr = 'LEGENDRE'
-quadType = 'RADAU-RIGHT'
-implSweep = ['IMEX-NS']
-explSweep = 'PIC'
+quadType = 'LOBATTO'
+implSweep = ['DNODES-2', 'DNODES-3']
+explSweep = 'PIC-0'
+# implSweep = 'BE'
+# explSweep = 'FE'
 initSweep = 'COPY'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
-lambdaI = 0.7j
-lambdaE = 0.3j
+lambdaI = 1.0j
+lambdaE = 0.1j
 # -----------------------------------------------------------------------------
 
 listNumStep = [2**(i+2) for i in range(8)]
@@ -36,7 +38,7 @@ IMEXSDC.setParameters(
 solver = IMEXSDC(u0, lambdaI, lambdaE)
 
 plt.figure()
-for nSweep in [0, 1, 2, 3]:
+for nSweep in [0, 1, 2]:
 
     IMEXSDC.nSweep = nSweep
 
@@ -51,11 +53,13 @@ for nSweep in [0, 1, 2, 3]:
             solver.step(dt)
             uNum += [solver.u.copy()]
         uNum = np.array(uNum)
-        err = np.linalg.norm(uNum-uTh, ord=np.inf)
+        #err = np.linalg.norm(uNum-uTh, ord=np.inf)
+        err = np.abs(uNum-uTh)[-1]
         return dt, err
 
     # Run all simulations
     dt, err = np.array([getErr(n) for n in listNumStep]).T
+    print(err)
 
     # Plot error VS time step
     lbl = f'SDC, nSweep={IMEXSDC.nSweep}'

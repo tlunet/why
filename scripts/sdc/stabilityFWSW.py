@@ -17,7 +17,7 @@ M = 4
 nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
-implSweep = ['TRAPAR', 'TRAPAR', 'MIN-SR-S']
+implSweep = ['BEPAR'] + [f'DNODES-{i+1}' for i in range(M)]
 explSweep = 'PIC'
 initSweep = 'QDELTA'
 collUpdate = False
@@ -62,7 +62,7 @@ def plotStabContour(ax, nSweep, implSweep, explSweep,
                        f'forceProl={forceProl}, initSweep={initSweep}', y=0.95)
 
 
-lSweeps = [1, 2, 3]
+lSweeps = [2, 3, 4]
 fig, axs = plt.subplots(1, len(lSweeps))
 fig.set_size_inches(len(lSweeps)*4, 4)
 for i, nSweep in enumerate(lSweeps):
