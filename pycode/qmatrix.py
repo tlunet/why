@@ -99,7 +99,7 @@ def genQDelta(nodes, sweepType, Q, lambdaI, lambdaE):
         QDelta = np.zeros(Q.shape)
         factor = sweepType.split('-')[-1]
         if factor == 'PIC':
-            factor = 1.0
+            factor = 0.0
         else:
             try:
                 factor = float(factor)
