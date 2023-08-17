@@ -221,7 +221,7 @@ class IMEXSDC(IMEXSDCCore):
 
         # Performs sweeps
         for k in range(self.nSweep):
-            if self._setSweep(k): self._updateLHS(dt)
+            if self._setSweep(k, self.lambdaI, self.lambdaE): self._updateLHS(dt)
             self._sweep()
 
         # Compute prolongation if needed

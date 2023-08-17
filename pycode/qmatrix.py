@@ -16,7 +16,7 @@ except ImportError:
     from coeffs import OPT_COEFFS, WEIRD_COEFFS
 
 
-def genQDelta(nodes, sweepType, Q):
+def genQDelta(nodes, sweepType, Q, lambdaI, lambdaE):
     """
     Generate QDelta matrix for a given node distribution
 
@@ -116,9 +116,16 @@ def genQDelta(nodes, sweepType, Q):
         QDelta[:] = np.diag(nodes/2)
         dtau = nodes/2
 
-    elif sweepType == "TEST":
+    elif sweepType == "IMEX-NS":
+        QDelta[:] = np.absolute(lambdaE + lambdaI) / np.absolute(lambdaI) * np.diag(nodes/M)
 
-        QDelta[:] = 1 / 0.7 * np.diag(nodes/M)
+    elif sweepType.startswith('IMEX'):
+        factor = sweepType.split('-')[-1]
+        try:
+            factor = float(factor)
+        except (ValueError, TypeError):
+            raise ValueError(f"IMEX doesn't accept {factor} as parameter")
+        QDelta[:] = np.absolute(lambdaE + lambdaI) / np.absolute(lambdaI) * np.diag(nodes) / factor
 
     elif sweepType.startswith('THETAPAR-'):
         theta = float(sweepType.split('-')[-1])
