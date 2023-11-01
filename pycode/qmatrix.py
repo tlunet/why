@@ -16,7 +16,7 @@ except ImportError:
     from coeffs import OPT_COEFFS, WEIRD_COEFFS
 
 
-def genQDelta(nodes, sweepType, Q, lambdaI, lambdaE):
+def genQDelta(nodes, sweepType, Q, lambdaI=1, lambdaE=1):
     """
     Generate QDelta matrix for a given node distribution
 

@@ -18,6 +18,7 @@ nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
 implSweep = ['BEPAR'] + [f'DNODES-{i+1}' for i in range(M)]
+# implSweep = ['BEPAR', 'MIN-SR-S']
 explSweep = 'PIC'
 initSweep = 'QDELTA'
 collUpdate = False

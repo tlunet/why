@@ -14,18 +14,18 @@ from pycode.dahlquist import IMEXSDC
 # Change these ...
 # -- collocation settings
 M = 4
-nodeDistr = 'LEGENDRE'
-quadType = 'LOBATTO'
-implSweep = ['DNODES-2', 'DNODES-3']
-explSweep = 'PIC-0'
+nodeDistr = 'EQUID'
+quadType = 'RADAU-RIGHT'
+implSweep = ["MIN-SR-NS"]
+explSweep = 'PIC-1'
 # implSweep = 'BE'
 # explSweep = 'FE'
-initSweep = 'COPY'
+initSweep = 'QDELTA'
 collUpdate = False
 # -- Dahlquist settings
 u0 = 1.0
 lambdaI = 1.0j
-lambdaE = 0.1j
+lambdaE = 0.0
 # -----------------------------------------------------------------------------
 
 listNumStep = [2**(i+2) for i in range(8)]
@@ -38,7 +38,7 @@ IMEXSDC.setParameters(
 solver = IMEXSDC(u0, lambdaI, lambdaE)
 
 plt.figure()
-for nSweep in [0, 1, 2]:
+for nSweep in [0, 1, 2, 3]:
 
     IMEXSDC.nSweep = nSweep
 
@@ -76,6 +76,7 @@ plt.ylabel(r'error ($L_{inf}$)')
 plt.ylim(1e-10, 1e1)
 plt.legend()
 plt.grid(True)
-plt.title(f'{IMEXSDC.implSweep}, {M}-{quadType}-{nodeDistr}')
+plt.title(f'{IMEXSDC.implSweep}, {M}-{quadType}-{nodeDistr}',
+          fontdict=dict(fontsize=10))
 plt.tight_layout()
 plt.show()
