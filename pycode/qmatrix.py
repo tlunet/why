@@ -15,6 +15,8 @@ except ImportError:
     from lagrange import LagrangeApproximation
     from coeffs import OPT_COEFFS, WEIRD_COEFFS
 
+# To avoid recomputing QDelta coefficients with MIN-SR-S
+STORAGE = {}
 
 def genQDelta(nodes, sweepType, Q):
     """
@@ -147,23 +149,31 @@ def genQDelta(nodes, sweepType, Q):
 
     elif sweepType == "MIN-SR-S":
 
-        nCoeffs = M
-        if quadType in ['LOBATTO', 'RADAU-LEFT']:
-            nCoeffs -= 1;
-            Q = Q[1:, 1:]
-            nodes = nodes[1:]
+        idString = f'{M}-{quadType}-{distr}'
+        if idString in STORAGE:
+            # Coefficients have already been computed
+            coeffs = STORAGE[idString]
+        else:
+            # Compute coefficients using the determinant (numerical approach)
+            nCoeffs = M
+            if quadType in ['LOBATTO', 'RADAU-LEFT']:
+                nCoeffs -= 1;
+                Q = Q[1:, 1:]
+                nodes = nodes[1:]
 
-        def func(coeffs):
-            coeffs = np.asarray(coeffs)
-            kMats = [(1-z)*np.eye(nCoeffs) + z*np.diag(1/coeffs) @ Q
-                     for z in nodes]
-            vals = [np.linalg.det(K)-1 for K in kMats]
-            return np.array(vals)
+            def func(coeffs):
+                coeffs = np.asarray(coeffs)
+                kMats = [(1-z)*np.eye(nCoeffs) + z*np.diag(1/coeffs) @ Q
+                         for z in nodes]
+                vals = [np.linalg.det(K)-1 for K in kMats]
+                return np.array(vals)
 
-        coeffs = sp.optimize.fsolve(func, nodes/M, xtol=1e-14)
+            coeffs = sp.optimize.fsolve(func, nodes/M, xtol=1e-14)
 
-        if quadType in ['LOBATTO', 'RADAU-LEFT']:
-            coeffs = [0] + list(coeffs)
+            if quadType in ['LOBATTO', 'RADAU-LEFT']:
+                coeffs = [0] + list(coeffs)
+
+            STORAGE[idString] = coeffs
 
         QDelta[:] = np.diag(coeffs)
 

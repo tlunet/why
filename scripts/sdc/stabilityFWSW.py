@@ -17,7 +17,7 @@ M = 4
 nodeDistr = 'EQUID'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
-implSweep = ['THETAPAR-0.6']
+implSweep = ['THETAPAR-0.5']
 explSweep = 'PIC'
 initSweep = 'QDELTA'
 collUpdate = False

@@ -13,21 +13,21 @@ from pycode.dahlquist import IMEXSDC
 # -----------------------------------------------------------------------------
 # Change these ...
 # -- collocation settings
-M = 4
-nodeDistr = 'EQUID'
+M = 2
+nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
-implSweep = ['THETAPAR-0.6', 'MIN-SR-S']
+implSweep = ['TRAPAR']
 explSweep = 'PIC'
 initSweep = 'QDELTA'
-collUpdate = False
+collUpdate = True
 # -- Dahlquist settings
 u0 = 1.0
-lambdaI = 1j-0.1
+lambdaI = 1j
 lambdaE = 0
 # -----------------------------------------------------------------------------
 
-listNumStep = [2**(i+2) for i in range(8)]
+listNumStep = [2**(i+1) for i in range(8)]
 
 IMEXSDC.setParameters(
     M=M, quadType=quadType, nodeDistr=nodeDistr,
@@ -37,7 +37,8 @@ IMEXSDC.setParameters(
 solver = IMEXSDC(u0, lambdaI, lambdaE)
 
 plt.figure()
-for nSweep in [0, 1, 2, 3]:
+symList = ['o', '^', 's', '<']
+for i, nSweep in enumerate([0, 1, 2, 3]):
 
     IMEXSDC.nSweep = nSweep
 
@@ -60,7 +61,7 @@ for nSweep in [0, 1, 2, 3]:
 
     # Plot error VS time step
     lbl = f'SDC, nSweep={IMEXSDC.nSweep}'
-    sym = '^-'
+    sym = symList[i]+'-'
     plt.loglog(dt, err, sym, label=lbl)
 
     # Plot order curve
