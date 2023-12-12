@@ -85,11 +85,14 @@ class IMEXSDCCore(object):
     initSweep = DEFAULT['initSweep']
     forceProl = DEFAULT['forceProl']
 
+    lambdaI = None
+    lambdaE = None
+
     # Collocation method attributes
     nodes, weights, Q = genCollocation(DEFAULT['nNodes'], nodeDistr, quadType)
     # IMEX SDC attributes
-    QDeltaI, dtauI = genQDelta(nodes, implSweep, Q)
-    QDeltaE, dtauE = genQDelta(nodes, explSweep, Q)
+    QDeltaI, dtauI = genQDelta(nodes, implSweep, Q, lambdaI, lambdaE)
+    QDeltaE, dtauE = genQDelta(nodes, explSweep, Q, lambdaI, lambdaE)
 
     # Default attributes, used later as instance attributes
     # => should be defined in inherited class
@@ -100,7 +103,7 @@ class IMEXSDCCore(object):
     def setParameters(cls, M=None, nodeDistr=None, quadType=None,
                       implSweep=None, explSweep=None, initSweep=None,
                       nSweep=None, forceProl=None, calcResidual=None,
-                      logResidual=None, logResIter=None):
+                      logResidual=None, logResIter=None, lambdaI=None, lambdaE=None):
 
         # Get non-changing parameters
         keepM = M is None
@@ -130,13 +133,13 @@ class IMEXSDCCore(object):
             iSweepName = implSweep
             if not isinstance(implSweep, str):
                 iSweepName = implSweep[0]
-            cls.QDeltaI, cls.dtauI = genQDelta(cls.nodes, iSweepName, cls.Q)
+            cls.QDeltaI, cls.dtauI = genQDelta(cls.nodes, iSweepName, cls.Q, lambdaI, lambdaE)
             cls.implSweep = implSweep
         if updateQDeltaE:
             eSweepName = explSweep
             if not isinstance(explSweep, str):
                 eSweepName = explSweep[0]
-            cls.QDeltaE, cls.dtauE = genQDelta(cls.nodes, eSweepName, cls.Q)
+            cls.QDeltaE, cls.dtauE = genQDelta(cls.nodes, eSweepName, cls.Q, lambdaI, lambdaE)
             cls.explSweep = explSweep
 
         # Eventually update additional parameters
@@ -180,7 +183,8 @@ class IMEXSDCCore(object):
         return not cls.rightIsNode() or cls.forceProl
 
     @classmethod
-    def _setSweep(cls, k):
+    def _setSweep(cls, k, lambdaI, lambdaE):
+        updateQDeltaI = False
         if cls.initSweep == 'QDELTA':
             k += 1
         # Eventually change implicit QDelta during sweeps
@@ -189,14 +193,16 @@ class IMEXSDCCore(object):
                 iSweepName = cls.implSweep[k]
             except IndexError:
                 iSweepName = cls.implSweep[-1]
-            cls.QDeltaI = genQDelta(cls.nodes, iSweepName, cls.Q)[0]
+            cls.QDeltaI = genQDelta(cls.nodes, iSweepName, cls.Q, lambdaI, lambdaE)[0]
+            updateQDeltaI = True
         # Eventually change explicit QDelta during sweeps
         if not isinstance(cls.explSweep, str):
             try:
                 eSweepName = cls.explSweep[k]
             except IndexError:
                 eSweepName = cls.explSweep[-1]
-            cls.QDeltaE = genQDelta(cls.nodes, eSweepName, cls.Q)[0]
+            cls.QDeltaE = genQDelta(cls.nodes, eSweepName, cls.Q, lambdaI, lambdaE)[0]
+        return updateQDeltaI
 
 
 

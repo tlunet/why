@@ -17,14 +17,18 @@ M = 2
 nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
-implSweep = ['TRAPAR']
-explSweep = 'PIC'
+implSweep = ["MIN-SR-NS"]
+explSweep = 'PIC-1'
+# implSweep = 'BE'
+# explSweep = 'FE'
 initSweep = 'QDELTA'
 collUpdate = True
 # -- Dahlquist settings
 u0 = 1.0
 lambdaI = 1j
 lambdaE = 0
+lambdaI = 1.0j
+lambdaE = 0.0
 # -----------------------------------------------------------------------------
 
 listNumStep = [2**(i+1) for i in range(8)]
@@ -32,7 +36,7 @@ listNumStep = [2**(i+1) for i in range(8)]
 IMEXSDC.setParameters(
     M=M, quadType=quadType, nodeDistr=nodeDistr,
     implSweep=implSweep, explSweep=explSweep, initSweep=initSweep,
-    forceProl=collUpdate)
+    forceProl=collUpdate, lambdaI=lambdaI, lambdaE=lambdaE)
 
 solver = IMEXSDC(u0, lambdaI, lambdaE)
 
@@ -53,11 +57,13 @@ for i, nSweep in enumerate([0, 1, 2, 3]):
             solver.step(dt)
             uNum += [solver.u.copy()]
         uNum = np.array(uNum)
-        err = np.linalg.norm(uNum-uTh, ord=np.inf)
+        #err = np.linalg.norm(uNum-uTh, ord=np.inf)
+        err = np.abs(uNum-uTh)[-1]
         return dt, err
 
     # Run all simulations
     dt, err = np.array([getErr(n) for n in listNumStep]).T
+    print(err)
 
     # Plot error VS time step
     lbl = f'SDC, nSweep={IMEXSDC.nSweep}'
@@ -74,5 +80,7 @@ plt.ylabel(r'error ($L_{inf}$)')
 plt.ylim(1e-10, 1e1)
 plt.legend()
 plt.grid(True)
-plt.title(f'{IMEXSDC.implSweep}, {M}-{quadType}-{nodeDistr}')
+plt.title(f'{IMEXSDC.implSweep}, {M}-{quadType}-{nodeDistr}',
+          fontdict=dict(fontsize=10))
 plt.tight_layout()
+plt.show()

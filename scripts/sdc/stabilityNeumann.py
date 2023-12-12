@@ -18,8 +18,8 @@ nodeDistr = 'LEGENDRE'
 quadType = 'RADAU-RIGHT'
 # -- SDC settings
 varSweeps = [f'DNODES-{i+1}' for i in range(M)]
-sweepType = ['THETAPAR-0.5']
-# sweepType = varSweeps
+sweepType = ['TRAPAR', 'TRAPAR', 'MIN-SR-S']
+sweepType = varSweeps
 initSweep = 'QDELTA'
 collUpdate = False
 # -- plot settings
@@ -65,5 +65,5 @@ def plotStabContour(nSweep):
 
     return stab
 
-for nSweep in [1, 2, 3]:
+for nSweep in [1, 2, 3, 4]:
     stab = plotStabContour(nSweep)
