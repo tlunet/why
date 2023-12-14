@@ -24,6 +24,7 @@ we have for every polynomial of this space :
 $$
 D[p] : p \mapsto \sum_{i=1}^{M} d_i p(\tau_i)l_i(x),
 $$
+
 $$
 Q[p] : p \mapsto \int_{0}^{x} p(t)dt,
 $$
@@ -94,7 +95,7 @@ $$
 = \sum_{i=1}^{M} d_i T(i,m,k) l_i(x)
 $$
 
-with the $T(i,m,k)$ term defined using the Einstein sum convention :
+with the $T(i,m,k)$ term for $k>1$ defined using the Einstein sum convention :
 
 $$
 \begin{align*}
