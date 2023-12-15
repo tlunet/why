@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 
 from pycode.qmatrix import genCollocation, genQDelta
 
-quadType = 'GAUSS'
-distr = 'CHEBY-4'
+quadType = 'RADAU-RIGHT'
+distr = 'LEGENDRE'
 
 
 def fit(d, tau):
@@ -37,10 +37,11 @@ def nilpotency(d, Q):
         np.linalg.matrix_power(K, M), ord=np.inf)
 
 
-incremental = True
+incremental = False
 a = None
 b = None
 idx = "ijklmnopqrstuvwxyzabcdefgh"
+nils = []
 plt.figure()
 for M in range(2, 20):
 
@@ -86,11 +87,18 @@ for M in range(2, 20):
     a, b = fit(di*M, nodes)
     print("----", M, "---")
     print(a, b)
-    print(nilpotency(di, Q))
+    nil = nilpotency(di, Q)
+    print(nil)
+    nils.append(nil)
 
 print("----")
 plt.plot(nodes, a*nodes**b, '--')
 plt.grid()
+
+plt.figure('nilpotency')
+plt.semilogy(nils, label=f'incremental={incremental}')
+plt.grid(True)
+plt.legend()
 
 M = 4
 nodes, _, Q = genCollocation(M, distr, quadType)
