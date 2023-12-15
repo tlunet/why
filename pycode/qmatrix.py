@@ -184,11 +184,19 @@ def genQDelta(nodes, sweepType, Q, lambdaI=1, lambdaE=1):
             def func(coeffs):
                 coeffs = np.asarray(coeffs)
                 kMats = [(1-z)*np.eye(nCoeffs) + z*np.diag(1/coeffs) @ Q
-                         for z in nodes]
+                          for z in nodes]
                 vals = [np.linalg.det(K)-1 for K in kMats]
                 return np.array(vals)
 
             coeffs = sp.optimize.fsolve(func, nodes/M, xtol=1e-14)
+
+            # def func(coeffs):
+            #     coeffs = np.asarray(coeffs)
+            #     K = np.eye(nCoeffs) - np.linalg.solve(np.diag(coeffs), Q)
+            #     return np.linalg.norm(np.linalg.matrix_power(K, nCoeffs))
+
+            # coeffs = sp.optimize.minimize(func, coeffs, method="nelder-mead")
+            # coeffs = coeffs.x
 
             if quadType in ['LOBATTO', 'RADAU-LEFT']:
                 coeffs = [0] + list(coeffs)
