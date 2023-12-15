@@ -11,10 +11,10 @@ import scipy.optimize as sco
 import sympy as sy
 from pycode.qmatrix import genCollocation
 
-M = 5
+M = 3
 quadType = 'RADAU-RIGHT'
 distr = 'LEGENDRE'
-fullSym = False
+fullSym = True
 
 nodes, _, QNum = genCollocation(M, distr, quadType)
 
@@ -43,7 +43,7 @@ D = sy.diag(*xCoeffs)
 lam = sy.Symbol('\\lambda')
 
 Korig =  D.inv()*Q - sy.eye(nCoeffs)
-K = D.inv()*Q - (1+lam)*sy.eye(nCoeffs)
+K = lam*D*Q - (1+lam)*sy.eye(nCoeffs)
 
 
 min3Sol = [False]
@@ -119,16 +119,16 @@ if fullSym:
         print('Found solution(s) symbolically')
     else:
         print('Solving numerically')
-        
+
         Q = sy.Matrix(QNum)
         Korig =  D.inv()*Q - sy.eye(nCoeffs)
         K = D.inv()*Q - (1+lam)*sy.eye(nCoeffs)
-        
+
         poly = sy.poly(K.det(), lam)
         coeffs = poly.coeffs()
         xProd = sy.prod(xCoeffs)
         equations = [c*xProd for c in coeffs[1:]]
-        
+
         sol = [sy.nsolve(equations, xCoeffs, nodes)]
         if len(sol) > 0:
             print('Found solution numerically')
