@@ -253,7 +253,7 @@ def genCollocation(M, distr, quadType):
     nodes = NodesGenerator(node_type=distr, quad_type=quadType).getNodes(M)
     nodes += 1
     nodes /= 2
-    np.round(nodes, 14, out=nodes)
+    # np.round(nodes, 14, out=nodes)
 
     # Compute Q and weights
     approx = LagrangeApproximation(nodes)
