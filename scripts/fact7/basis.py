@@ -37,7 +37,7 @@ def nilpotency(d, Q):
         np.linalg.matrix_power(K, M), ord=np.inf)
 
 
-incremental = True
+incremental = False
 a = None
 b = None
 idx = "ijklmnopqrstuvwxyzabcdefgh"
@@ -45,8 +45,8 @@ nils = []
 
 qDeltas = {}
 
-# plt.figure()
-mVals = range(2, 20)
+plt.figure()
+mVals = range(2, 10)
 for M in mVals:
 
     nodes, _, Q = genCollocation(M, distr, quadType)
@@ -129,7 +129,7 @@ for M in mVals:
         else:
             d0 = a*_nodes**b/M
 
-        sol = sp.optimize.root(func2, d0, tol=1e-15, method="hybr")
+        sol = sp.optimize.root(func, d0, tol=1e-15, method="hybr")
         coeffs = sol.x
 
         if quadType in ['LOBATTO', 'RADAU-LEFT']:
@@ -142,7 +142,7 @@ for M in mVals:
     di = np.diag(qDelta)
 
     di = np.array(di)
-    # plt.plot(nodes, di*M, 'o-')
+    plt.plot(nodes, di*M, 'o-')
 
     a, b = fit(di*M, nodes)
     print("---- M =", M, "---")
@@ -152,8 +152,8 @@ for M in mVals:
     nils.append(nil)
 
 print("----")
-# plt.plot(nodes, a*nodes**b, '--')
-# plt.grid()
+plt.plot(nodes, a*nodes**b, '--')
+plt.grid()
 
 plt.figure('nilpotency')
 plt.semilogy(mVals, nils, 'o-', label=f'incremental={incremental}')
