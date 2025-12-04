@@ -26,9 +26,9 @@ and for Forward Euler :
 ```math
 Q_\Delta = \begin{bmatrix}
 0 & & &\\
-\Delta\tau_1 & 0 & &\\
+\Delta\tau_2 & 0 & &\\
 \vdots & \vdots & \ddots &\\
-\Delta\tau_1 & \Delta\tau_2 & \dots & 0
+\Delta\tau_2 & \Delta\tau_3 & \dots & 0
 \end{bmatrix}
 ```
 
